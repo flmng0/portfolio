@@ -1,4 +1,12 @@
-{% extends "post.html" %}
+---
+layout: post
+tags: sketch
+eleventyComputed:
+  eleventyNavigation:
+    key: "{{ page.fileSlug }}"
+    parent: "sketches"
+---
+
 
 {%- set sourcePath = ("sketches/" + src) | srcPath -%}
 
@@ -38,7 +46,6 @@
   </dialog>
 {% endhtml %}
 
-{% block preamble %}
 <div class="mx-auto mb-8 flex max-w-xl flex-col gap-4">
   <canvas
     id="sketchCanvas"
@@ -48,4 +55,7 @@
 
   <button onclick="sourceModal.showModal()" class="btn btn-lift p-2">View Source</button>
 </div>
-{% endblock %}
+
+<main>
+  {{ content | safe }}
+</main>

@@ -1,13 +1,9 @@
 ---
-layout: post
-tags: project
+layout: project
 title: Cabinet
 description: >
   Self-hosted invoicing system, targetting freelance developers.
 source: https://github.com/flmng0/cabinet
-eleventyNavigation:
-  key: cabinet
-  parent: projects
 ---
 
 # Cabinet

@@ -1,0 +1,12 @@
+---
+layout: post
+tags: project
+eleventyComputed:
+  eleventyNavigation:
+    key: "{{ page.fileSlug }}"
+    parent: "projects"
+---
+
+<main>
+  {{ content | safe }}
+</main>

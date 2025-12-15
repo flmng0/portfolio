@@ -1,16 +1,12 @@
 ---
-tags: sketch
+layout: sketch
 title: Julia Set Visualisation
 description: >
   Animated visualisation of the Julia-set of fractals.
-layout: sketch
 type: shader
 src: julia.glsl
 canvasStyle: "background-color: black;"
 thumbnail: julia.png
-eleventyNavigation:
-  key: julia
-  parent: sketches
 ---
 
 # Julia Set Visualisation

@@ -40,6 +40,7 @@ export default function (eleventyConfig) {
   eleventyConfig.addLayoutAlias("main", "main.html");
   eleventyConfig.addLayoutAlias("post", "post.html");
   eleventyConfig.addLayoutAlias("sketch", "sketch.html");
+  eleventyConfig.addLayoutAlias("project", "project.html");
 
   eleventyConfig.addPassthroughCopy({
     static: "/",
