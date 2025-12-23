@@ -7,11 +7,9 @@ eleventyComputed:
     parent: "sketches"
 ---
 
-
-{%- set sourcePath = ("sketches/" + src) | srcPath -%}
-
 {% html "head" %}
   {% if type == "shader" %}
+    {% set sourcePath = ("sketches/" + page.fileSlug + ".glsl") | srcPath %}
     {% set syntaxLang = "glsl" %}
     <script type="x-shader/x-fragment" id="fragShader">
       {%- include sourcePath -%}
@@ -22,8 +20,9 @@ eleventyComputed:
       runShader(fragSource);
     </script>
   {% else %}
+    {% set sourcePath = ("cljs/sketches/" + page.fileSlug + ".cljs") | srcPath %}
     {% set syntaxLang = "clojure" %}
-    <script src="/js/{{sketchId}}" type="module" defer></script>
+    <script src="/js/sketches/{{page.fileSlug}}" type="module" defer></script>
   {% endif %}
 {% endhtml %}
 
@@ -49,7 +48,7 @@ eleventyComputed:
 <div class="mx-auto mb-8 flex max-w-xl flex-col gap-4">
   <canvas
     id="sketchCanvas"
-    class="aspect-square w-full shadow-solid"
+    class="aspect-square w-full shadow-solid outline outline-black/25"
     style="{{ canvasStyle }}"
   ></canvas>
 
