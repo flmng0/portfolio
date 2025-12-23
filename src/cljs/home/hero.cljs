@@ -99,7 +99,7 @@
       (drag)
       (apply-physics dt)))
 
-(defn update-particles [{:keys [particles] :as model}]
+(defn tick [{:keys [particles] :as model}]
   (let [dt (s/delta)
         pointer (mapv - (s/pointer-pos) (s/center))
         arg {:dt dt :pointer pointer}
@@ -136,5 +136,5 @@
     :frame-rate 60
     :isolate? true
     :seed (seed played?)
-    :update update-particles
+    :tick tick
     :draw draw}))

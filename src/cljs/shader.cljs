@@ -70,7 +70,7 @@ uniform float uTime;
     (.uniform2fv gl uResolution (s/size))
     (.uniform1fv gl uTime [(s/time)])))
 
-(defn- updater [{gl :gl shader :shader :as m}]
+(defn- tick [{gl :gl shader :shader :as m}]
   (update-uniforms gl shader)
   m)
 
@@ -95,7 +95,7 @@ uniform float uTime;
      {:gl gl :shader shader :uniforms (get-uniform-locations gl shader)}))
 
   (s/run {:seed seed
-          :update updater
+          :tick tick
           :draw draw
           :context-type "webgl2"}))
 

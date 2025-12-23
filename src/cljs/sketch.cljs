@@ -85,8 +85,8 @@
            (apply merge-with merge @state)))))
 
 (defn run
-  [{update-fn :update :keys [draw clear? clear-color seed size frame-rate isolate? context-type] :as opts}]
-  (when update-fn (assert seed) ":seed state expected when using :update")
+  [{:keys [draw clear? clear-color seed tick size frame-rate isolate? context-type] :as opts}]
+  (when tick (assert seed) ":seed state expected when using :tick")
 
   ; Set initial state
   (when (nil? @state) (reset! state (init-state opts)))
@@ -102,11 +102,11 @@
   (let [model (if (fn? seed) (seed) seed)]
     (swap! state assoc :model model))
 
-  (fn tick [t]
+  (fn process [t]
     (swap! state merge (process-input) (update-time t))
 
-    (when (and update-fn (not (first-frame?)))
-      (swap! state update :model update-fn))
+    (when (and tick (not (first-frame?)))
+      (swap! state update :model tick))
 
     (when clear? (clear clear-color))
     (draw (:model @state))
@@ -118,8 +118,8 @@
     (let [{:keys [frame-rate start time]} @state
           frame-time (if frame-rate (/ 1000 frame-rate))
           t' (+ time start)
-          tick? (or (first-frame?) (nil? frame-rate) (> (- t t') frame-time))]
-      (when tick? (tick t))
+          process? (or (first-frame?) (nil? frame-rate) (> (- t t') frame-time))]
+      (when process? (process t))
       (js/window.requestAnimationFrame frame-loop)))
   (js/window.requestAnimationFrame frame-loop))
 
