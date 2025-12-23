@@ -5,7 +5,7 @@
 (defn- init-state [{:keys [frame-rate context-type]}]
   (let [canvas (js/document.getElementById "sketchCanvas")
         context (.getContext canvas (or context-type "2d"))]
-    {:time 0 :frame-rate frame-rate :frame 0 :context context}))
+    {:time 0 :frame-rate frame-rate :frame 0 :context context :keys [] :keys-just-pressed #{}}))
 
 (def default-size [500 500])
 
@@ -64,28 +64,41 @@
       (when isolate? (unisolate-events cvs))
       (push-event :pointer-up [x y]))
 
+    (fn key-event [ety {id :key}]
+      (push-event ety id))
+
+    (.addEventListener js/window "keydown" (partial key-event :key-down))
+    (.addEventListener js/window "keyup" (partial key-event :key-up))
+
     (.addEventListener cvs "pointermove" pointer-moved)
     (.addEventListener cvs "pointerdown" pointer-down)
     (.addEventListener cvs "pointerup" pointer-up)))
 
 
-(defn- event->state [event]
-  (let [[etype args] event]
+(defn- process-event [s event]
+  (let [[etype data] event]
     (case etype
-      :pointer-moved (let [[x y] args] {:pointer {:x x :y y}})
-      :pointer-down (let [[x y] args] {:pointer {:down true :x x :y y}})
-      :pointer-up (let [[x y] args] {:pointer {:down false :x x :y y}}))))
+      :pointer-moved (assoc s :pointer {:down (get-in s [:pointer :down]) :pos data})
+      :pointer-down (assoc s :pointer {:down true :pos data})
+      :pointer-up (assoc s :pointer {:down false :pos data})
+      :key-down 
+        (-> s 
+            (assoc-in [:keys data] true)
+            (update :keys-just-pressed conj data))
+      :key-up 
+        (-> s
+            (update :keys dissoc data)
+            (update :keys-just-pressed disj data)))))
 
 (defn- process-input []
   (let [events (flush-events)]
     (if (empty? events)
       []
-      (->> events
-           (mapv event->state)
-           (apply merge-with merge @state)))))
+      (let [s (assoc @state :keys-just-pressed #{})]
+          (reduce process-event s events)))))
 
 (defn run
-  [{:keys [draw clear? clear-color seed tick size frame-rate isolate? context-type] :as opts}]
+  [{:keys [draw clear? clear-color seed tick size frame-rate isolate? context-type print-seed?] :as opts}]
   (when tick (assert seed) ":seed state expected when using :tick")
 
   ; Set initial state
@@ -100,6 +113,7 @@
 
   ; Add the seed model value if provided
   (let [model (if (fn? seed) (seed) seed)]
+    (when print-seed? (println model))
     (swap! state assoc :model model))
 
   (fn process [t]
@@ -154,6 +168,8 @@
   (swap! state assoc :frame-rate frame-rate))
 
 (defn size [] ((juxt #(.-width %) #(.-height %)) (canvas)))
+(defn width [] (.-width (canvas)))
+(defn height [] (.-height (canvas)))
 
 (defn resize
   ([size]
@@ -170,14 +186,21 @@
 
 (defn pointer-pos []
   (if-let [pointer (:pointer @state)]
-    ((juxt :x :y) pointer)
+    (:pos pointer)
     [0 0]))
 
 (defn pointer-down? []
   (get-in @state [:pointer :down]))
 
+(defn key-down? [id]
+  (get-in @state [:keys id]))
+
+(defn key-just-pressed? [id]
+  (get-in @state [:keys-just-pressed id]))
+
 ; Helpers for defining drawing methods
 (defn- apply-opts [ctx {:keys [fill stroke stroke-width scale rotate translate]}]
+  (set! (.-font ctx) "bold 32px monospace")
   (when fill (set! (.-fillStyle ctx) fill))
   (when stroke (set! (.-strokeStyle ctx) stroke))
   (when stroke-width (set! (.-lineWidth ctx) stroke-width))

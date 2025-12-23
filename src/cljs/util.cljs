@@ -27,3 +27,21 @@
   (if (map? a)
     (apply merge-with deep-merge a maps)
     (apply merge-with deep-merge maps)))
+
+(defn random
+  ([to] (random 0 to))
+  ([from to]
+   (-> (js/Math.random)
+       (* (- to from))
+       (+ from)
+       (js/Math.floor))))
+   
+(defn find-2d [haystack needle]
+  (loop [y 0
+         [line & tail] haystack]
+    (if 
+      (nil? line) nil
+      (let [x (.indexOf line needle)]
+        (if 
+          (= -1 x) (recur (inc y) tail)
+          [x y])))))
