@@ -12,9 +12,9 @@
     "variant": "linkedin"
   },
   {
-    "name": "Email to me@tmthy.dev",
+    "name": "Email to me@timd.dev",
     "accessibleName": "Email",
-    "href": "mailto:me@tmthy.dev",
+    "href": "mailto:me@timd.dev",
     "icon": "mail",
     "variant": "email"
   }

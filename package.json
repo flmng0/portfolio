@@ -1,5 +1,5 @@
 {
-  "name": "tmthy.dev",
+  "name": "tim-davis-portfolio",
   "version": "1.0.0",
   "description": "Eventual portfolio website.",
   "scripts": {
@@ -12,16 +12,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/flmng0/tmthy.dev.git"
+    "url": "git+https://github.com/flmng0/portfolio.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/flmng0/tmthy.dev/issues"
+    "url": "https://github.com/flmng0/portfolio/issues"
   },
-  "homepage": "https://github.com/flmng0/tmthy.dev#readme",
+  "homepage": "timd.dev",
   "dependencies": {
     "@11ty/eleventy": "^3.1.2",
     "@11ty/eleventy-navigation": "^1.0.4",
