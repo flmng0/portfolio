@@ -1,2 +1,138 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
+
+@custom-variant played (&:where([data-played="true"] *));
+
+html,
+body {
+	height: 100%;
+}
+
+body {
+	margin: 0;
+}
+
+body:has(dialog[open]) {
+	overflow: hidden;
+}
+
+[inert] {
+	@apply pointer-events-none;
+}
+[inert],
+[inert] * {
+	@apply select-none;
+}
+
+::selection {
+	@apply bg-fuchsia-400 text-white;
+}
+
+.noise {
+	--gradient-stop: 80%;
+	background:
+		radial-gradient(rgb(255 255 255 / 1) var(--gradient-stop), rgb(255 255 255 / 0.3) 120%),
+		url('/blur.svg');
+}
+.noise:hover {
+	--gradient-stop: 50%;
+}
+
+.btn-github {
+	--btn-color: white;
+	--btn-bg: oklab(0.278 -0.004 -0.011);
+	--btn-shadow-color: oklab(0.178 -0.004 -0.011);
+}
+
+.btn-linkedin {
+	--btn-color: white;
+	--btn-bg: oklab(0.546 -0.061 -0.115);
+	--btn-shadow-color: oklab(0.446 -0.061 -0.115);
+}
+
+.btn-email {
+	--btn-color: white;
+	--btn-bg: oklab(0.696 0.097 0.137);
+	--btn-shadow-color: oklab(0.596 0.097 0.137);
+}
+
+.btn-link {
+	--btn-color: oklab(0.12 0 0);
+	--btn-bg: oklab(0.99 0 0);
+	--btn-shadow-color: oklab(0.88 0 0);
+}
+
+.btn-view-source {
+	--btn-color: oklab(0.12 0 0);
+	--btn-bg: oklab(0.99 0 0);
+	--btn-shadow-color: oklab(0.88 0 0);
+}
+
+@layer components {
+	.btn {
+		--btn-shadow-color: rgb(0 0 0 / 0.25);
+		@apply bg-(--btn-bg) text-(--btn-color) shadow-(color:--btn-shadow-color);
+		@apply border border-(--btn-shadow-color);
+		@apply font-mono;
+	}
+	.btn:not(.noise):hover {
+		@apply brightness-95 saturate-90;
+	}
+}
+
+@utility btn-lift {
+	--btn-lift: 0px;
+
+	--btn-shadow-offset: calc(4px + var(--btn-lift));
+	--btn-shadow: var(--btn-shadow-offset) var(--btn-shadow-offset) 0 0 var(--btn-shadow-color, grey);
+
+	@apply -translate-(--btn-lift) shadow-(--btn-shadow);
+
+	&:hover {
+		--btn-lift: 1px;
+	}
+	&:active {
+		--btn-lift: -1px;
+	}
+}
+
+@theme {
+	--animate-blur: 500ms blur ease-in forwards;
+	--animate-fade-in: 1s fade-in ease-in both;
+	--animate-slide-in: 500ms slide-in ease-out backwards;
+
+	--content: min(70ch, 100%);
+	--blur: url(/rand.png);
+
+	--shadow-solid: 4px 4px 0 0 rgb(0 0 0 / 0.25);
+
+	--text-title: var(--text-4xl);
+	--text-heading: var(--text-xl);
+	--cols-heading: auto 1fr auto;
+
+	@keyframes blur {
+		100% {
+			filter: blur(4px);
+		}
+	}
+
+	@keyframes fade-in {
+		0% {
+			opacity: 0;
+		}
+		100% {
+			opacity: 1;
+		}
+	}
+
+	@keyframes slide-in {
+		0% {
+			opacity: 0;
+			transform: translateY(-75%);
+		}
+		100% {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+}
