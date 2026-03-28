@@ -13,8 +13,4 @@
 		border-radius: 0;
 		box-shadow: var(--shadow-solid);
 	}
-
-	:global(dialog pre) {
-		padding: 0;
-	}
 </style>

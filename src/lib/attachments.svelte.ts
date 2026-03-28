@@ -111,6 +111,6 @@ void main() {
 
 			window.requestAnimationFrame(draw)
 		}
-		window.requestAnimationFrame(draw)
+		draw()
 	}
 }

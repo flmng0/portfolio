@@ -7,9 +7,7 @@ description: Animated visualisation of the Julia set of fractals.
     import Julia from "./components/Julia.svelte"
 </script>
 
-<SketchHero>
-    <Julia />
-</SketchHero>
+<Julia />
 
 # Julia Set Visualisation
 
