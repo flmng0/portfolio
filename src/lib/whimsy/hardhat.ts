@@ -39,7 +39,7 @@ const hardhat: Attachment<HTMLElement> = (elem) => {
 		lastT = performance.now()
 
 		rot = 0
-		rotVel = -200
+		rotVel = map(Math.random(), 0, 1, -200, 200)
 
 		particle = new Particle(0, 0)
 

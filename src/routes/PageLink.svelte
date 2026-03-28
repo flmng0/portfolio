@@ -6,13 +6,13 @@
 	let { delay, page } = $props()
 </script>
 
-<li style:animation-delay={delay + 'ms'} class:animate-slide-in={state.heroPlayed}>
+<li style:animation-delay={delay + 'ms'} class:animate-slide-in={!state.heroPlayed}>
 	{#if page.indev === true}
 		<div class="group relative">
 			<button
-				{@attach hardhat}
 				class="absolute top-0 left-0 -translate-x-2 -translate-y-1/2 cursor-pointer"
 				aria-labelledby="{page.name}ConstructionMessage"
+				{@attach hardhat}
 			>
 				<Hardhat class="-rotate-30" />
 			</button>

@@ -1,0 +1,13 @@
+@reference "./app.css"
+
+article {
+	@apply prose prose-headings:font-mono prose-img:shadow-md;
+}
+
+article pre {
+	@apply rounded-none shadow-solid;
+}
+
+dialog pre {
+	@apply p-0;
+}

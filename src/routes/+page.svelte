@@ -1,14 +1,13 @@
 <script>
-	import { hero } from '$lib/whimsy'
-	import { autoSizeCanvas } from '$lib/attachments.svelte.js'
-	import GitHub from '$lib/icons/GitHub.svelte'
-	import LinkedIn from '$lib/icons/LinkedIn.svelte'
-	import Mail from '$lib/icons/Mail.svelte'
+	import { beforeNavigate } from '$app/navigation'
 
 	import PageLink from './PageLink.svelte'
 	import SocialLink from './SocialLink.svelte'
-	import { beforeNavigate } from '$app/navigation'
+
 	import state from '$lib/state.svelte.js'
+	import { hero } from '$lib/whimsy'
+	import { autoSizeCanvas } from '$lib/attachments.svelte.js'
+	import { socials } from '$lib/consts.js'
 
 	beforeNavigate(() => {
 		state.heroPlayed = true
@@ -17,37 +16,15 @@
 	let { data } = $props()
 
 	const pages = [
-		{ name: 'projects', href: '/projects', indev: true },
-		{ name: 'sketches', href: '/sketches', indev: true },
+		{ name: 'projects', href: '/projects' },
+		{ name: 'sketches', href: '/sketches' },
 		{ name: 'blog', href: '/blog', indev: true }
-	]
-
-	const socials = [
-		{
-			name: 'GitHub',
-			href: 'https://github.com/flmng0',
-			icon: GitHub,
-			variant: 'github'
-		},
-		{
-			name: 'LinkedIn',
-			href: 'https://www.linkedin.com/in/timothy-davis-dev',
-			icon: LinkedIn,
-			variant: 'linkedin'
-		},
-		{
-			name: 'Email to me@timd.dev',
-			accessibleName: 'Email',
-			href: 'mailto:me@timd.dev',
-			icon: Mail,
-			variant: 'email'
-		}
 	]
 </script>
 
 <div class="grid h-full place-items-center *:col-1 *:row-1">
 	<canvas
-		style:animation-delay="500ms"
+		class:played={state.heroPlayed}
 		class="absolute inset-0 h-screen w-screen"
 		{@attach hero(data.points, data.lines)}
 		{@attach autoSizeCanvas}
@@ -77,9 +54,10 @@
 <style>
 	canvas {
 		animation: var(--animate-blur);
-
-		:global([data-played='true']) & {
-			animation-duration: 0;
+		animation-delay: 500ms;
+		&.played {
+			animation-delay: 0ms;
+			animation-duration: 0ms;
 		}
 	}
 </style>
