@@ -1,13 +1,16 @@
 <script lang="ts">
 	import Hardhat from '$lib/icons/Hardhat.svelte'
+	import state from '$lib/state.svelte'
+	import { hardhat } from '$lib/whimsy'
+
 	let { delay, page } = $props()
 </script>
 
-<li style:animation-delay={delay + 'ms'} class="not-played:animate-slide-in">
+<li style:animation-delay={delay + 'ms'} class:animate-slide-in={state.heroPlayed}>
 	{#if page.indev === true}
 		<div class="group relative">
 			<button
-				data-whimsy="hardhat"
+				{@attach hardhat}
 				class="absolute top-0 left-0 -translate-x-2 -translate-y-1/2 cursor-pointer"
 				aria-labelledby="{page.name}ConstructionMessage"
 			>

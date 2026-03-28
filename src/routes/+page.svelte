@@ -1,13 +1,24 @@
 <script>
+	import { hero } from '$lib/whimsy'
+	import { autoSizeCanvas } from '$lib/attachments.svelte.js'
 	import GitHub from '$lib/icons/GitHub.svelte'
 	import LinkedIn from '$lib/icons/LinkedIn.svelte'
 	import Mail from '$lib/icons/Mail.svelte'
+
 	import PageLink from './PageLink.svelte'
 	import SocialLink from './SocialLink.svelte'
+	import { beforeNavigate } from '$app/navigation'
+	import state from '$lib/state.svelte.js'
+
+	beforeNavigate(() => {
+		state.heroPlayed = true
+	})
+
+	let { data } = $props()
 
 	const pages = [
-		{ name: 'projects', href: '/projects' },
-		{ name: 'sketches', href: '/sketches' },
+		{ name: 'projects', href: '/projects', indev: true },
+		{ name: 'sketches', href: '/sketches', indev: true },
 		{ name: 'blog', href: '/blog', indev: true }
 	]
 
@@ -34,30 +45,22 @@
 	]
 </script>
 
-<svelte:head>
-	<script>
-		if (sessionStorage.getItem('animation-played')) {
-			document.documentElement.setAttribute('data-played', 'true')
-		}
-		sessionStorage.setItem('animation-played', 'yes')
-	</script>
-</svelte:head>
-
 <div class="grid h-full place-items-center *:col-1 *:row-1">
 	<canvas
-		id="sketchCanvas"
 		style:animation-delay="500ms"
-		class="absolute inset-0 h-screen w-screen not-played:animate-blur"
-		aria-hidden="true"
+		class="absolute inset-0 h-screen w-screen"
+		{@attach hero(data.points, data.lines)}
+		{@attach autoSizeCanvas}
 	></canvas>
 
 	<main
 		style:animation-delay="500ms"
-		class="z-10 flex flex-col justify-center space-y-10 text-center not-played:animate-fade-in"
+		class:animate-fade-in={!state.heroPlayed}
+		class="z-10 flex flex-col justify-center space-y-10 text-center"
 	>
 		<h1 class="p-2 font-mono text-title">timd.dev</h1>
 		<nav class="w-full space-y-6 font-mono">
-			<ul class="mx-auto flex flex-row justify-center gap-4">
+			<ul class="mx-auto flex flex-wrap justify-center gap-4">
 				{#each pages as page, i}
 					<PageLink {page} delay={600 + 300 * i} />
 				{/each}
@@ -67,29 +70,16 @@
 					<SocialLink {social} delay={900 + 300 * i} />
 				{/each}
 			</ul>
-			<!-- <ul class="mx-auto flex flex-row flex-wrap justify-center gap-4 font-mono"> -->
-			<!--   {%- for page in pages -%} -->
-			<!--   {%- set delay = startDelay + itemDelay * loop.index -%} -->
-			<!--   {%- endfor -%} -->
-			<!-- </ul> -->
-			<!-- <ul class="flex justify-center gap-4"> -->
-			<!--   {%- for social in socials -%} -->
-			<!--   {%- set delay = groupOffset + startDelay + itemDelay * loop.index -%} -->
-			<!--   <li -->
-			<!--     class="animation-delay-{{ delay }} animate-slide-in animation-fill-backwards played:no-animate" -->
-			<!--   > -->
-			<!--     <a -->
-			<!--       class="btn btn-{{ social.variant }} block p-2" -->
-			<!--       target="_blank" -->
-			<!--       href="{{ social.href }}" -->
-			<!--       title="{{ social.name }}" -->
-			<!--     > -->
-			<!--       {% set label = social.accessibleName | default(social.name) + " icon" %} -->
-			<!--       {% icon social.icon, "aria-label"=label %} -->
-			<!--     </a> -->
-			<!--   </li> -->
-			<!--   {%- endfor -%} -->
-			<!-- </ul> -->
 		</nav>
 	</main>
 </div>
+
+<style>
+	canvas {
+		animation: var(--animate-blur);
+
+		:global([data-played='true']) & {
+			animation-duration: 0;
+		}
+	}
+</style>
