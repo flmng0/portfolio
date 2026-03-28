@@ -1,4 +1,4 @@
-import { defineMDSveXConfig } from "mdsvex";
+import { defineMDSveXConfig } from 'mdsvex'
 import remarkMath from 'remark-math'
 import rehypeKatexSvelte from 'rehype-katex-svelte'
 
