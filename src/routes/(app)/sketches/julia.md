@@ -2,6 +2,14 @@
 title: Julia Set Visualisation
 description: Animated visualisation of the Julia set of fractals.
 ---
+<script>
+    import SketchHero from "./components/SketchHero.svelte"
+    import Julia from "./components/Julia.svelte"
+</script>
+
+<SketchHero>
+    <Julia />
+</SketchHero>
 
 # Julia Set Visualisation
 

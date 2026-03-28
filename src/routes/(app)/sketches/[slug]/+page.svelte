@@ -1,5 +1,4 @@
 <script lang="ts">
-	import '$lib/css/prism-gruvbox-dark.css'
 	import PostLayout from '$lib/PostLayout.svelte'
 
 	let { data } = $props()
