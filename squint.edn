@@ -1,3 +1,0 @@
-{:paths ["src/cljs"]
- :output-dir "_site/js"
- :extension "js"}

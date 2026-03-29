@@ -1,45 +1,36 @@
 {
-  "name": "tim-davis-portfolio",
-  "version": "1.0.0",
-  "description": "Eventual portfolio website.",
-  "scripts": {
-    "dev": "npm run dev:squint & npm run dev:11ty",
-    "dev:squint": "squint watch",
-    "dev:11ty": "eleventy --serve",
-    "build": "npm run build:squint && npm run build:11ty",
-    "build:11ty": "eleventy",
-    "build:squint": "squint compile"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/flmng0/portfolio.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
-  "bugs": {
-    "url": "https://github.com/flmng0/portfolio/issues"
-  },
-  "homepage": "timd.dev",
-  "dependencies": {
-    "@11ty/eleventy": "^3.1.2",
-    "@11ty/eleventy-navigation": "^1.0.4",
-    "@tailwindcss/vite": "^4.1.13",
-    "eleventy-plugin-icons": "^4.5.4",
-    "lucide-static": "^0.544.0",
-    "markdown-it": "^14.1.0",
-    "markdown-it-math": "^5.2.1",
-    "mathup": "^1.0.0",
-    "tailwindcss": "^4.1.13"
-  },
-  "devDependencies": {
-    "@11ty/eleventy-plugin-syntaxhighlight": "^5.0.2",
-    "@11ty/eleventy-plugin-vite": "^7.1.0-alpha.2",
-    "@tailwindcss/typography": "^0.5.19",
-    "prettier": "^3.7.4",
-    "prettier-plugin-jinja-template": "^2.1.0",
-    "prettier-plugin-tailwindcss": "^0.7.2",
-    "squint-cljs": "^0.8.154"
-  }
+	"name": "portfolio",
+	"private": true,
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"prepare": "svelte-kit sync || echo ''",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"lint": "prettier --check .",
+		"format": "prettier --write ."
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-static": "^3.0.10",
+		"@sveltejs/kit": "^2.50.2",
+		"@sveltejs/vite-plugin-svelte": "^6.2.4",
+		"@tailwindcss/typography": "^0.5.19",
+		"@tailwindcss/vite": "^4.1.18",
+		"katex": "^0.16.44",
+		"mdsvex": "^0.12.6",
+		"prettier": "^3.8.1",
+		"prettier-plugin-svelte": "^3.4.1",
+		"prettier-plugin-tailwindcss": "^0.7.2",
+		"rehype-katex-svelte": "^1.2.0",
+		"remark-math": "^3.0.0",
+		"shiki": "^4.0.2",
+		"svelte": "^5.54.0",
+		"svelte-check": "^4.4.2",
+		"tailwindcss": "^4.1.18",
+		"typescript": "^5.9.3",
+		"vite": "^7.3.1"
+	}
 }

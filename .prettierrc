@@ -1,19 +1,19 @@
 {
 	"$schema": "https://www.schemastore.org/prettierrc.json",
-	"plugins": [
-		"prettier-plugin-tailwindcss",
-		"prettier-plugin-jinja-template"
-	],
-	"tailwindStylesheet": "./src/css/app.css",
+	"useTabs": true,
+	"singleQuote": true,
+	"semi": false,
 	"htmlWhitespaceSensitivity": "ignore",
+	"trailingComma": "none",
+	"printWidth": 100,
+	"plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"],
 	"overrides": [
 		{
-			"files": [
-				"src/**/*.html"
-			],
+			"files": "*.svelte",
 			"options": {
-				"parser": "jinja-template"
+				"parser": "svelte"
 			}
 		}
-	]
+	],
+	"tailwindStylesheet": "./src/lib/app.css"
 }
