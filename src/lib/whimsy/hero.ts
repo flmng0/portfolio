@@ -44,6 +44,12 @@ function drawConnection(
 	ctx.stroke()
 }
 
+function drawRepeller(ctx: CanvasRenderingContext2D, pointer: Point) {
+	ctx.beginPath()
+	ctx.arc(...pointer, repelRadius, 0, 2 * Math.PI)
+	ctx.stroke()
+}
+
 export default function hero(
 	points: [number, number][],
 	lines: [number, number][]
@@ -79,7 +85,10 @@ export default function hero(
 
 		let lastT = performance.now()
 		let pointer: Point
+		let pointerDown = false
 
+		window.addEventListener('pointerdown', () => (pointerDown = true))
+		window.addEventListener('pointerup', () => (pointerDown = false))
 		window.addEventListener('pointermove', (e) => {
 			pointer = [e.clientX, e.clientY]
 		})
@@ -93,9 +102,10 @@ export default function hero(
 			const cy = cvs.height / 2
 
 			const translatedPointer = pointer && subtract(pointer, [cx, cy])
+			const repellerActive = pointerDown && translatedPointer !== undefined
 
 			for (const p of particles) {
-				if (translatedPointer !== undefined) {
+				if (repellerActive) {
 					const dd = distSq(translatedPointer, p.pos)
 					if (dd < repelRadiusSq) {
 						p.repel(translatedPointer, repelScale)
@@ -107,6 +117,8 @@ export default function hero(
 			}
 
 			ctx.clearRect(0, 0, cvs.width, cvs.height)
+
+			pointerDown && drawRepeller(ctx, pointer)
 
 			ctx.save()
 			ctx.translate(cvs.width / 2, cvs.height / 2)
