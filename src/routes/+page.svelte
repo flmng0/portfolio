@@ -30,7 +30,7 @@
 <div class="grid h-full place-items-center *:col-1 *:row-1">
 	<canvas
 		class:played={state.heroPlayed}
-		class="absolute inset-0 h-screen w-screen"
+		class="touch-action-none absolute inset-0 h-screen w-screen"
 		{@attach hero(data.points, data.lines)}
 		{@attach autoSizeCanvas}
 	></canvas>

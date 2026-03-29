@@ -5,11 +5,13 @@
 
 	const palette = ['white', 'black', 'red', 'green', 'blue', 'cyan', 'magenta', 'yellow']
 
-	let brush = $state(0)
+	let brush = $state(1)
 	let canvas = $state<HTMLCanvasElement>()
-	const SCALE = 8
-	const W = SCALE * 16
-	const H = SCALE * 9
+	const SCALE = 12
+	const ASPECTW = 4
+	const ASPECTH = 3
+	const W = SCALE * ASPECTW
+	const H = SCALE * ASPECTH
 
 	let pixels = $state(Array.from({ length: W * H }, () => 0))
 
@@ -86,12 +88,15 @@
 	onpointerup={() => (pointer.down = false)}
 />
 
-<div class="flex justify-center gap-x-2">
+<div class="flex items-center justify-center gap-x-2">
 	<PaintBrush paintColor={palette[brush]} class="size-10" />
 
 	{#each palette as b, i}
 		<button
-			class={['btn size-10 hover:-translate-0.5', brush == i && 'shadow-solid']}
+			class={[
+				'btn aspect-square size-6 hover:-translate-0.5 md:size-10',
+				brush == i && 'shadow-solid'
+			]}
 			onclick={() => (brush = i)}
 		>
 			<span class="hidden">Select {b} color</span>
@@ -103,10 +108,11 @@
 <div class="relative">
 	<canvas
 		bind:this={canvas}
-		class="mt-4 aspect-16/9 h-auto max-h-screen w-full outline outline-neutral-300"
+		style:aspect-ratio="{ASPECTW}/{ASPECTH}"
+		class="touch-action-none mt-4 h-auto max-h-screen w-full outline outline-neutral-300"
 		onpointerleave={() => (pointer.inside = false)}
-		onpointerenter={() => (pointer.inside = true)}
 		onpointermove={(e) => {
+			pointer.inside = true
 			pointer.x = e.offsetX
 			pointer.y = e.offsetY
 		}}
