@@ -15,7 +15,12 @@ const config = {
 			return isExternalLibrary ? undefined : true
 		}
 	},
-	kit: { adapter: adapter() },
+	kit: {
+		adapter: adapter(),
+		alias: {
+			$assets: './src/assets'
+		}
+	},
 	preprocess: [mdsvex(mdsvexConfig)],
 	extensions: ['.svelte', '.md']
 }

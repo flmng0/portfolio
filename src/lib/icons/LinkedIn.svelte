@@ -1,5 +1,5 @@
 <script lang="ts">
-	import linkedInImage from '$lib/assets/InBug-White.png'
+	import linkedInImage from '$assets/InBug-White.png'
 	let props = $props()
 </script>
 

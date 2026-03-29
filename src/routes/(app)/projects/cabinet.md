@@ -7,6 +7,10 @@ source: https://github.com/flmng0/cabinet
 post: true
 ---
 
+<script>
+  import exampleInvoice from "$assets/projects/cabinet-example-invoice.png"
+</script>
+
 # Cabinet
 
 Cabinet is a simple, self-hosted invoicing system. The goal of the project was just to have a quick way to send my clients invoices.
@@ -15,7 +19,7 @@ When I was designing it, I tried my best to make it re-usable for others in the 
 
 See below for a screenshot of an example invoice:
 
-![Example Invoice](/img/projects/cabinet-example-invoice.png)
+![Example Invoice]({exampleInvoice})
 
 
 ## Configuration

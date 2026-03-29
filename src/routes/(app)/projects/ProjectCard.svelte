@@ -1,4 +1,5 @@
 <script lang="ts">
+	import ExternalLink from '$lib/icons/ExternalLink.svelte'
 	import GitHub from '$lib/icons/GitHub.svelte'
 	let { project } = $props()
 	const linkClasses = 'btn btn-lift px-3 py-2'
@@ -19,10 +20,10 @@
 		{#if project.link}
 			<a class="{linkClasses} btn-visit" href={project.link} target="_blank">
 				<span>Visit</span>
-				<!-- {%- icon "external-link", width="16", height="16", class="inline-block", "aria-role"="presentation", "aria-label"="External link icon" -%} -->
+				<ExternalLink class="inline-block size-4" />
 			</a>
 		{/if}
-		{#if project.post && false}
+		{#if project.post}
 			<a class="{linkClasses} btn-read" href="/projects/{project.slug}">Read More</a>
 		{/if}
 	</footer>
