@@ -22,6 +22,11 @@
 	]
 </script>
 
+<svelte:head>
+	<title>timd.dev</title>
+	<meta name="description" content="Portfolio of Australian web designer: Tim Davis." />
+</svelte:head>
+
 <div class="grid h-full place-items-center *:col-1 *:row-1">
 	<canvas
 		class:played={state.heroPlayed}

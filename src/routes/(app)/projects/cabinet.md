@@ -3,6 +3,8 @@ layout: project
 title: Cabinet
 description: >
   Self-hosted invoicing system, targetting freelance developers.
+metaDescription: >
+  Post-development blog about Tim Davis' self-hosted invoicing system for freelancers.
 source: https://github.com/flmng0/cabinet
 post: true
 ---

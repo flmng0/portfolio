@@ -5,6 +5,7 @@ export const load: PageLoad = async ({ params }) => {
 	const module = await import(`../${slug}.md`)
 
 	return {
-		body: module.default
+		body: module.default,
+		...(module.metadata as Record<string, any>)
 	}
 }
