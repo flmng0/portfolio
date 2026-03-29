@@ -95,7 +95,7 @@ export default function hero(
 
 		const draw = () => {
 			const t = performance.now()
-			const dt = (t - lastT) / 1000
+			const dt = Math.min((t - lastT) / 1000, 0.1)
 			lastT = t
 
 			const cx = cvs.width / 2
@@ -118,7 +118,9 @@ export default function hero(
 
 			ctx.clearRect(0, 0, cvs.width, cvs.height)
 
-			pointerDown && drawRepeller(ctx, pointer)
+			if (pointerDown && pointer !== undefined) {
+				drawRepeller(ctx, pointer)
+			}
 
 			ctx.save()
 			ctx.translate(cvs.width / 2, cvs.height / 2)
