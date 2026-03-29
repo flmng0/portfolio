@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { autoSizeCanvas } from '$lib/attachments.svelte'
 	import type { Attachment } from 'svelte/attachments'
+	import PaintBrush from './PaintBrush.svelte'
 
 	const palette = ['white', 'black', 'red', 'green', 'blue', 'cyan', 'magenta', 'yellow']
 
 	let brush = $state(0)
+	let canvas = $state<HTMLCanvasElement>()
 	const SCALE = 8
 	const W = SCALE * 16
 	const H = SCALE * 9
@@ -37,15 +39,36 @@
 
 	let pointer = $state({
 		down: false,
+		inside: false,
 		x: 0,
 		y: 0
 	})
+
+	function moveStylus(elem: HTMLElement, pointerX: number, pointerY: number) {
+		const tileWidth = canvas!.width / W
+		const tileHeight = canvas!.height / H
+		elem.style.width = tileWidth + 'px'
+		elem.style.height = tileHeight + 'px'
+
+		const x = Math.floor(pointerX / tileWidth)
+		const y = Math.floor(pointerY / tileHeight)
+
+		elem.style.display = pointer.inside ? 'block' : 'none'
+
+		elem.style.transform = `translate(${x * tileWidth}px, ${y * tileHeight}px)`
+	}
+
+	const stylus: Attachment<HTMLElement> = (elem) => {
+		$effect(() => {
+			moveStylus(elem, pointer.x, pointer.y)
+		})
+	}
 
 	const renderPixels: Attachment<HTMLCanvasElement> = (cvs) => {
 		const ctx = cvs.getContext('2d')!
 
 		$effect(() => {
-			if (!pointer.down) {
+			if (!pointer.down || !pointer.inside) {
 				return
 			}
 
@@ -58,23 +81,38 @@
 	}
 </script>
 
+<svelte:window
+	onpointerdown={() => (pointer.down = true)}
+	onpointerup={() => (pointer.down = false)}
+/>
+
 <div class="flex justify-center gap-x-2">
+	<PaintBrush paintColor={palette[brush]} class="size-10" />
+
 	{#each palette as b, i}
-		<button class="btn btn-lift" onclick={() => (brush = i)}>
+		<button
+			class={['btn size-10 hover:-translate-0.5', brush == i && 'shadow-solid']}
+			onclick={() => (brush = i)}
+		>
 			<span class="hidden">Select {b} color</span>
-			<div class="size-10" style:background-color={b}></div>
+			<div class="size-full" style:background-color={b}></div>
 		</button>
 	{/each}
 </div>
 
-<canvas
-	class="mt-4 aspect-16/9 h-auto max-h-screen w-full outline outline-neutral-300"
-	onpointermove={(e) => {
-		pointer.x = e.offsetX
-		pointer.y = e.offsetY
-	}}
-	onpointerdown={() => (pointer.down = true)}
-	onpointerup={() => (pointer.down = false)}
-	{@attach autoSizeCanvas}
-	{@attach renderPixels}
-></canvas>
+<div class="relative">
+	<canvas
+		bind:this={canvas}
+		class="mt-4 aspect-16/9 h-auto max-h-screen w-full outline outline-neutral-300"
+		onpointerleave={() => (pointer.inside = false)}
+		onpointerenter={() => (pointer.inside = true)}
+		onpointermove={(e) => {
+			pointer.x = e.offsetX
+			pointer.y = e.offsetY
+		}}
+		{@attach autoSizeCanvas}
+		{@attach renderPixels}
+	></canvas>
+
+	<div class="pointer-events-none absolute top-0 left-0 outline" {@attach stylus}></div>
+</div>
