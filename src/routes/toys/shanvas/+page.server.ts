@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types'
-import { SHANVAS_SECRET_KEY } from '$env/static/private'
+import { SHANVAS_SECRET_KEY } from '$env/dynamic/private'
 import { error } from '@sveltejs/kit'
 
 export const prerender = false
