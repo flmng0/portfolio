@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types'
 import { env } from '$env/dynamic/private'
 import { error } from '@sveltejs/kit'
-import { apiRoot } from './consts'
+import { apiPath, apiRoot } from './consts'
 
 export const prerender = false
 
@@ -16,7 +16,7 @@ const handleStatus = async (res: Response) => {
 const tokenCookieName = '_shanvas_token'
 
 async function getToken(fetch: typeof globalThis.fetch) {
-	const response = await fetch(apiRoot + '/authorize', {
+	const response = await fetch(apiPath('/authorize'), {
 		method: 'POST',
 		headers: {
 			Authorization: 'Secret ' + env.SHANVAS_SECRET_KEY
@@ -41,11 +41,11 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
 
 	cookies.set(tokenCookieName, tokenCookie, { path: '/toys/shanvas' })
 
-	const configPromise = fetch(apiRoot + '/config')
+	const configPromise = fetch(apiPath('/config'))
 		.then(handleStatus)
 		.then((res) => res.json())
 
-	const statePromise = fetch(apiRoot)
+	const statePromise = fetch(apiPath('/'))
 		.then(handleStatus)
 		.then((res) => res.blob())
 		.then((res) => res.bytes())

@@ -1,5 +1,5 @@
 import { onMount } from 'svelte'
-import { apiRoot } from './consts'
+import { apiPath } from './consts'
 
 export const canvas = $state({
 	pixels: [] as number[],
@@ -13,7 +13,7 @@ export function initCanvas(state: Uint8Array, config: { width: number; height: n
 	canvas.height = config.height
 
 	onMount(() => {
-		const eventSource = new EventSource(apiRoot + '/sse')
+		const eventSource = new EventSource(apiPath('/sse'))
 
 		eventSource.addEventListener('paint', (e) => {
 			const { x, y, brush } = JSON.parse(e.data)
@@ -28,7 +28,7 @@ export function paint(x: number, y: number, brush: number) {
 	const oldPixel = canvas.pixels[idx]
 	canvas.pixels[idx] = brush
 
-	fetch(apiRoot, {
+	fetch(apiPath('/'), {
 		body: JSON.stringify({ x, y, brush }),
 		method: 'PATCH'
 	}).then((res) => {
