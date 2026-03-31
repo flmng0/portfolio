@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types'
-import { SHANVAS_SECRET_KEY } from '$env/dynamic/private'
+import { env } from '$env/dynamic/private'
 import { error } from '@sveltejs/kit'
 
 export const prerender = false
@@ -18,7 +18,7 @@ async function getToken(fetch: typeof globalThis.fetch) {
 	const response = await fetch('/api/shanvas/authorize', {
 		method: 'POST',
 		headers: {
-			Authorization: 'Secret ' + SHANVAS_SECRET_KEY
+			Authorization: 'Secret ' + env.SHANVAS_SECRET_KEY
 		}
 	}).then(handleStatus)
 
