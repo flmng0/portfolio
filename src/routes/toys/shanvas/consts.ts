@@ -1,4 +1,3 @@
-export const apiRoot = import.meta.env.VITE_SHANVAS_ROOT || '/api/shanvas'
-if (apiRoot !== '/api/shanvas') {
-	console.log('Using Api Root', apiRoot)
-}
+import { env } from '$env/dynamic/public'
+
+export const apiRoot = env.PUBLIC_SHANVAS_ROOT || '/api/shanvas'
