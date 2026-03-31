@@ -2,6 +2,8 @@ import type { PageServerLoad } from './$types'
 import { SHANVAS_SECRET_KEY } from '$env/static/private'
 import { error } from '@sveltejs/kit'
 
+export const prerender = false
+
 const handleStatus = async (res: Response) => {
 	if (res.ok) {
 		return res

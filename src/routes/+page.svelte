@@ -56,6 +56,8 @@
 	</main>
 </div>
 
+<a href="/toys/shanvas" class="fixed right-0 bottom-0 opacity-0">Goto Shanvas</a>
+
 <style>
 	canvas {
 		animation: var(--animate-blur);
