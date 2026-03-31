@@ -7,7 +7,7 @@ export default defineConfig({
 	server: {
 		proxy: {
 			'/api/shanvas': {
-				target: 'localhost:5678',
+				target: 'http://localhost:5678',
 				changeOrigin: true,
 				rewrite: (path) => path.replace(/^\/api\/shanvas/, '')
 			}
