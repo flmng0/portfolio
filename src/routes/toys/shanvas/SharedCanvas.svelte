@@ -3,39 +3,26 @@
 	import type { Attachment } from 'svelte/attachments'
 	import PaintBrush from './PaintBrush.svelte'
 
-	let { pixels, config, onpaint } = $props()
+	import { canvas, paint } from './canvas.svelte'
 
 	const palette = ['white', 'black', 'red', 'green', 'blue', 'cyan', 'magenta', 'yellow']
 
 	let brush = $state(1)
-	let canvas = $state<HTMLCanvasElement>()
-
-	let w = $derived(config.width)
-	let h = $derived(config.height)
+	let canvasElement = $state<HTMLCanvasElement>()
+	let tileWidth = $derived((canvasElement?.width || 0) / canvas.width)
+	let tileHeight = $derived((canvasElement?.height || 0) / canvas.height)
 
 	function draw(ctx: CanvasRenderingContext2D, pixels: number[]) {
-		const tileW = ctx.canvas.width / w
-		const tileH = ctx.canvas.height / h
+		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
 
-		for (let y = 0; y < h; y++) {
-			for (let x = 0; x < w; x++) {
-				const idx = x + w * y
+		for (let y = 0; y < canvas.height; y++) {
+			for (let x = 0; x < canvas.width; x++) {
+				const idx = x + y * canvas.width
+
 				ctx.fillStyle = palette[pixels[idx]]
-				ctx.fillRect(tileW * x, tileH * y, tileW, tileH)
+				ctx.fillRect(tileWidth * x, tileHeight * y, tileWidth, tileHeight)
 			}
 		}
-	}
-
-	function paint(ctx: CanvasRenderingContext2D, x: number, y: number) {
-		const tileW = ctx.canvas.width / w
-		const tileH = ctx.canvas.height / h
-
-		const tileX = Math.floor(x / tileW)
-		const tileY = Math.floor(y / tileH)
-
-		onpaint(tileX, tileY, brush)
-		ctx.fillStyle = palette[brush]
-		ctx.fillRect(tileX * tileW, tileY * tileH, tileW, tileH)
 	}
 
 	let pointer = $state({
@@ -46,8 +33,6 @@
 	})
 
 	function moveStylus(elem: HTMLElement, pointerX: number, pointerY: number) {
-		const tileWidth = canvas!.width / w
-		const tileHeight = canvas!.height / h
 		elem.style.width = tileWidth + 'px'
 		elem.style.height = tileHeight + 'px'
 
@@ -73,11 +58,13 @@
 				return
 			}
 
-			paint(ctx, pointer.x, pointer.y)
+			const tileX = Math.floor(pointer.x / tileWidth)
+			const tileY = Math.floor(pointer.y / tileHeight)
+			paint(tileX, tileY, brush)
 		})
 
 		$effect(() => {
-			draw(ctx, pixels)
+			draw(ctx, canvas.pixels)
 		})
 	}
 </script>
@@ -106,8 +93,8 @@
 
 <div class="relative">
 	<canvas
-		bind:this={canvas}
-		style:aspect-ratio="{config.width}/{config.height}"
+		bind:this={canvasElement}
+		style:aspect-ratio="{canvas.width}/{canvas.height}"
 		class="touch-action-none mt-4 h-auto max-h-screen w-full outline outline-neutral-300"
 		onpointerleave={() => (pointer.inside = false)}
 		onpointermove={(e) => {

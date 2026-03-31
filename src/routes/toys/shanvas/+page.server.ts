@@ -1,14 +1,53 @@
 import type { PageServerLoad } from './$types'
 import { SHANVAS_SECRET_KEY } from '$env/static/private'
+import { error } from '@sveltejs/kit'
 
-export const load: PageServerLoad = async ({ fetch }) => {
-	const token = await fetch('/api/token', {
+const handleStatus = async (res: Response) => {
+	if (res.ok) {
+		return res
+	}
+	const msg = await res.text()
+	throw error(res.status, msg)
+}
+
+const tokenCookieName = '_shanvas_token'
+
+async function getToken(fetch: typeof globalThis.fetch) {
+	const response = await fetch('/api/shanvas/authorize', {
+		method: 'POST',
 		headers: {
 			Authorization: 'Secret ' + SHANVAS_SECRET_KEY
 		}
-	}).then((res) => res.text())
+	}).then(handleStatus)
 
-	return {
-		apiToken: token
+	const cookies = response.headers.getSetCookie()
+
+	for (const cookie of cookies) {
+		if (cookie.startsWith(tokenCookieName + '=')) {
+			console.log(cookie)
+			return cookie.substring(tokenCookieName.length + 1)
+		}
 	}
+}
+
+export const load: PageServerLoad = async ({ fetch, cookies }) => {
+	const tokenCookie = cookies.get(tokenCookieName) || (await getToken(fetch))
+	if (tokenCookie === undefined) {
+		throw error(500, 'Failed to authorize')
+	}
+
+	cookies.set(tokenCookieName, tokenCookie, { path: '/toys/shanvas' })
+
+	const configPromise = fetch('/api/shanvas/config')
+		.then(handleStatus)
+		.then((res) => res.json())
+
+	const statePromise = fetch('/api/shanvas')
+		.then(handleStatus)
+		.then((res) => res.blob())
+		.then((res) => res.bytes())
+
+	const [config, state] = await Promise.all([configPromise, statePromise])
+
+	return { config, state }
 }

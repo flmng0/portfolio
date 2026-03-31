@@ -8,10 +8,10 @@ export default defineConfig(({ mode }) => {
 		plugins: [tailwindcss(), sveltekit()],
 		server: {
 			proxy: {
-				'/api': {
+				'/api/shanvas': {
 					target: dev ? 'http://localhost:5678' : import.meta.env.SHANVAS_API_HOST,
 					changeOrigin: true,
-					rewrite: (path) => path.replace(/^\/api/, '')
+					rewrite: (path) => path.replace(/^\/api\/shanvas/, '')
 				}
 			}
 		}
