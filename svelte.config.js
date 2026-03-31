@@ -1,6 +1,6 @@
 import { mdsvex } from 'mdsvex'
 import mdsvexConfig from './mdsvex.config.js'
-import adapter from '@sveltejs/adapter-static'
+import adapter from '@sveltejs/adapter-cloudflare'
 import { relative, sep } from 'node:path'
 
 /** @type {import('@sveltejs/kit').Config} */
