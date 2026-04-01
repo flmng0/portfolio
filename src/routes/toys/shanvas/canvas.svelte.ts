@@ -31,6 +31,10 @@ export function initCanvas(state: Uint8Array, config: { width: number; height: n
 export function paint(x: number, y: number, brush: number) {
 	const idx = x + y * canvas.width
 	const oldPixel = canvas.pixels[idx]
+	if (oldPixel === brush) {
+		return
+	}
+
 	canvas.pixels[idx] = brush
 
 	fetch(apiPath('/'), {
