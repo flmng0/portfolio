@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Controls from './Controls.svelte'
 	import SharedCanvas from './SharedCanvas.svelte'
 	import { setToken } from './api.js'
 	import { initCanvas } from './canvas.svelte.js'
@@ -10,12 +11,5 @@
 	initCanvas(data.state, data.config)
 </script>
 
-<div class="px-4 py-12">
-	<header class="text-center">
-		<h1 class="font-mono text-xl font-semibold">Shared Canvas</h1>
-	</header>
-
-	<main class="container mx-auto p-8 shadow-solid outline">
-		<SharedCanvas />
-	</main>
-</div>
+<Controls />
+<SharedCanvas />

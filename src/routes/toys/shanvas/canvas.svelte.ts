@@ -1,10 +1,15 @@
 import { onMount } from 'svelte'
 import { apiPath, token } from './api'
 
+export type ControlMode = 'brush' | 'pan'
+export const palette = ['white', 'black', 'red', 'green', 'blue', 'cyan', 'magenta', 'yellow']
+
 export const canvas = $state({
 	pixels: [] as number[],
 	width: 0,
-	height: 0
+	height: 0,
+	brush: 1,
+	mode: 'brush' as ControlMode
 })
 
 export function initCanvas(state: Uint8Array, config: { width: number; height: number }) {
