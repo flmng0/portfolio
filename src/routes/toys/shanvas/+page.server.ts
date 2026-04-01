@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types'
 import { env } from '$env/dynamic/private'
 import { error } from '@sveltejs/kit'
-import { apiPath, apiRoot } from './consts'
+import { apiPath } from './consts'
 
 export const prerender = false
 
@@ -9,7 +9,7 @@ const handleStatus = async (res: Response) => {
 	if (res.ok) {
 		return res
 	}
-	const msg = await res.text()
+	const msg = 'When fetching: ' + res.url + ' :: ' + (await res.text())
 	throw error(res.status, msg)
 }
 
@@ -17,6 +17,7 @@ const tokenCookieName = '_shanvas_token'
 
 async function getToken(fetch: typeof globalThis.fetch) {
 	const response = await fetch(apiPath('/authorize'), {
+		credentials: 'include',
 		method: 'POST',
 		headers: {
 			Authorization: 'Secret ' + env.SHANVAS_SECRET_KEY
@@ -27,25 +28,25 @@ async function getToken(fetch: typeof globalThis.fetch) {
 
 	for (const cookie of cookies) {
 		if (cookie.startsWith(tokenCookieName + '=')) {
-			console.log(cookie)
 			return cookie.substring(tokenCookieName.length + 1)
 		}
 	}
 }
 
 export const load: PageServerLoad = async ({ fetch, cookies }) => {
-	const tokenCookie = cookies.get(tokenCookieName) || (await getToken(fetch))
-	if (tokenCookie === undefined) {
+	const token = await getToken(fetch)
+	if (token === undefined) {
 		throw error(500, 'Failed to authorize')
 	}
 
-	cookies.set(tokenCookieName, tokenCookie, { path: '/toys/shanvas' })
+	cookies.set(tokenCookieName, token, { path: '/toys/shanvas' })
+	const opts = { headers: { Authorization: 'Bearer ' + token } }
 
-	const configPromise = fetch(apiPath('/config'))
+	const configPromise = fetch(apiPath('/config'), opts)
 		.then(handleStatus)
 		.then((res) => res.json())
 
-	const statePromise = fetch(apiPath('/'))
+	const statePromise = fetch(apiPath('/'), opts)
 		.then(handleStatus)
 		.then((res) => res.blob())
 		.then((res) => res.bytes())

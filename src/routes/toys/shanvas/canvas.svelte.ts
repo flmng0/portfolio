@@ -13,7 +13,7 @@ export function initCanvas(state: Uint8Array, config: { width: number; height: n
 	canvas.height = config.height
 
 	onMount(() => {
-		const eventSource = new EventSource(apiPath('/sse'))
+		const eventSource = new EventSource(apiPath('/sse'), { withCredentials: true })
 
 		eventSource.addEventListener('paint', (e) => {
 			const { x, y, brush } = JSON.parse(e.data)
@@ -30,7 +30,8 @@ export function paint(x: number, y: number, brush: number) {
 
 	fetch(apiPath('/'), {
 		body: JSON.stringify({ x, y, brush }),
-		method: 'PATCH'
+		method: 'PATCH',
+		credentials: 'include'
 	}).then((res) => {
 		if (!res.ok) {
 			canvas.pixels[idx] = oldPixel
