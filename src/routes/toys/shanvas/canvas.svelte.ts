@@ -1,5 +1,5 @@
 import { onMount } from 'svelte'
-import { apiPath } from './api'
+import { apiPath, token } from './api'
 
 export const canvas = $state({
 	pixels: [] as number[],
@@ -7,11 +7,7 @@ export const canvas = $state({
 	height: 0
 })
 
-export function initCanvas(
-	token: string,
-	state: Uint8Array,
-	config: { width: number; height: number }
-) {
+export function initCanvas(state: Uint8Array, config: { width: number; height: number }) {
 	canvas.pixels = Array.from(state)
 	canvas.width = config.width
 	canvas.height = config.height
