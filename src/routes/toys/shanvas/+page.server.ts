@@ -1,7 +1,7 @@
 import type { PageServerLoad } from './$types'
 import { env } from '$env/dynamic/private'
 import { error } from '@sveltejs/kit'
-import { apiPath } from './consts'
+import { apiPath } from './api'
 
 export const prerender = false
 
@@ -33,13 +33,12 @@ async function getToken(fetch: typeof globalThis.fetch) {
 	}
 }
 
-export const load: PageServerLoad = async ({ fetch, cookies }) => {
+export const load: PageServerLoad = async ({ fetch }) => {
 	const token = await getToken(fetch)
 	if (token === undefined) {
 		throw error(500, 'Failed to authorize')
 	}
 
-	cookies.set(tokenCookieName, token, { path: '/toys/shanvas' })
 	const opts = { headers: { Authorization: 'Bearer ' + token } }
 
 	const configPromise = fetch(apiPath('/config'), opts)
@@ -53,5 +52,5 @@ export const load: PageServerLoad = async ({ fetch, cookies }) => {
 
 	const [config, state] = await Promise.all([configPromise, statePromise])
 
-	return { config, state }
+	return { token, config, state }
 }
