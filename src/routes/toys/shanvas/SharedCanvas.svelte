@@ -64,8 +64,8 @@
 	const renderPixels: Attachment<HTMLCanvasElement> = (cvs) => {
 		const ctx = cvs.getContext('2d')!
 
-		pan.x = (canvas.width - canvasWidth) / 2
-		pan.y = (canvas.height - canvasHeight) / 2
+		pan.x = (canvas.width * scale - canvasWidth) / 2
+		pan.y = (canvas.height * scale - canvasHeight) / 2
 
 		cvs.addEventListener('pointerdown', (e) => {
 			pointer.x = e.clientX
