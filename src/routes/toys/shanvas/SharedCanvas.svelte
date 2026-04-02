@@ -108,6 +108,7 @@
 
 	function onzoom(dz: number, source: 'scroll' | 'pinch') {
 		if (source == 'pinch' && canvas.mode !== 'pan') return
+		// TODO: Zoom into center
 		zoom = clamp(zoom + dz, 0.5, 1.7)
 	}
 </script>
