@@ -4,6 +4,7 @@
 
 	import { canvas, palette, paint } from './canvas.svelte'
 	import { clamp } from '$lib/whimsy/math'
+	import { onMount } from 'svelte'
 
 	const separatorColor = '#eee'
 	let zoom = $state(1.0)
@@ -27,12 +28,15 @@
 
 		for (let y = 0; y < visibleHeight; y++) {
 			for (let x = 0; x < visibleWidth; x++) {
-				const ix = x + Math.floor(pan.x / scale)
-				const iy = y + Math.floor(pan.y / scale)
+				const px = Math.floor(pan.x)
+				const py = Math.floor(pan.y)
+
+				const ix = x + px
+				const iy = y + py
 				const idx = ix + iy * canvas.width
 
-				const offX = pan.x % scale
-				const offY = pan.y % scale
+				const offX = (pan.x - px) * scale
+				const offY = (pan.y - py) * scale
 
 				const rx = (x - 1) * separatorThickness + x * tileSize - offX
 				const ry = (y - 1) * separatorThickness + y * tileSize - offY
@@ -46,15 +50,15 @@
 
 	const stylus: Attachment<HTMLElement> = (elem) => {
 		$effect(() => {
-			const x = stylusX * scale - pan.x - separatorThickness
-			const y = stylusY * scale - pan.y - separatorThickness
+			const x = (stylusX - pan.x) * scale - separatorThickness
+			const y = (stylusY - pan.y) * scale - separatorThickness
 			elem.style.transform = `translate(${x}px, ${y}px)`
 		})
 	}
 
 	const getTilePoint = (pointerX: number, pointerY: number) => {
-		const tileX = Math.floor((pointerX + pan.x) / scale)
-		const tileY = Math.floor((pointerY + pan.y) / scale)
+		const tileX = Math.floor(pointerX / scale + pan.x)
+		const tileY = Math.floor(pointerY / scale + pan.y)
 
 		return [tileX, tileY]
 	}
@@ -76,12 +80,9 @@
 	const renderPixels: Attachment<HTMLCanvasElement> = (cvs) => {
 		const ctx = cvs.getContext('2d')!
 
-		pan.x = (canvas.width * scale - canvasWidth) / 2
-		pan.y = (canvas.height * scale - canvasHeight) / 2
-
 		const redraw = () => draw(ctx, canvas.pixels)
 
-		$effect(() => redraw())
+		redraw()
 
 		$effect(() => {
 			window.addEventListener('resize', redraw)
@@ -94,10 +95,15 @@
 		})
 	}
 
+	onMount(() => {
+		pan.x = (canvas.width - canvasWidth / scale) / 2
+		pan.y = (canvas.height - canvasHeight / scale) / 2
+	})
+
 	function onpan(dx: number, dy: number) {
 		if (canvas.mode !== 'pan') return
-		pan.x = clamp(pan.x + dx, 0, scale * canvas.width - canvasWidth)
-		pan.y = clamp(pan.y + dy, 0, scale * canvas.height - canvasHeight)
+		pan.x = clamp(pan.x + dx / scale, 0, canvas.width - canvasWidth / scale)
+		pan.y = clamp(pan.y + dy / scale, 0, canvas.height - canvasHeight / scale)
 	}
 
 	function onzoom(dz: number, source: 'scroll' | 'pinch') {
