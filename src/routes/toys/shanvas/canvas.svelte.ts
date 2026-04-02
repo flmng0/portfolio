@@ -9,13 +9,20 @@ export const canvas = $state({
 	width: 0,
 	height: 0,
 	brush: 1,
-	mode: 'brush' as ControlMode
+	mode: 'brush' as ControlMode,
+	offline: false
 })
 
-export function initCanvas(state: Uint8Array, config: { width: number; height: number }) {
+export function initCanvas(
+	state: Uint8Array,
+	config: { width: number; height: number; offline?: boolean }
+) {
 	canvas.pixels = Array.from(state)
 	canvas.width = config.width
 	canvas.height = config.height
+	canvas.offline = config.offline ?? false
+
+	if (canvas.offline) return
 
 	onMount(() => {
 		const eventSource = new EventSource(apiPath('/sse?token=' + token))
@@ -37,6 +44,8 @@ export function paint(x: number, y: number) {
 	}
 
 	canvas.pixels[idx] = brush
+
+	if (canvas.offline) return
 
 	fetch(apiPath('/'), {
 		body: JSON.stringify({ x, y, brush }),

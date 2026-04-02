@@ -34,23 +34,31 @@ async function getToken(fetch: typeof globalThis.fetch) {
 }
 
 export const load: PageServerLoad = async ({ fetch }) => {
-	const token = await getToken(fetch)
-	if (token === undefined) {
-		throw error(500, 'Failed to authorize')
+	try {
+		const token = await getToken(fetch)
+		if (token === undefined) {
+			throw error(500, 'Failed to authorize')
+		}
+
+		const opts = { headers: { Authorization: 'Bearer ' + token } }
+
+		const configPromise = fetch(apiPath('/config'), opts)
+			.then(handleStatus)
+			.then((res) => res.json())
+
+		const statePromise = fetch(apiPath('/'), opts)
+			.then(handleStatus)
+			.then((res) => res.blob())
+			.then((res) => res.bytes())
+
+		const [config, state] = await Promise.all([configPromise, statePromise])
+		return { token, config, state }
+	} catch {
+		const size = 1000
+
+		return {
+			config: { width: size, height: size, offline: true },
+			state: new Uint8Array(size * size)
+		}
 	}
-
-	const opts = { headers: { Authorization: 'Bearer ' + token } }
-
-	const configPromise = fetch(apiPath('/config'), opts)
-		.then(handleStatus)
-		.then((res) => res.json())
-
-	const statePromise = fetch(apiPath('/'), opts)
-		.then(handleStatus)
-		.then((res) => res.blob())
-		.then((res) => res.bytes())
-
-	const [config, state] = await Promise.all([configPromise, statePromise])
-
-	return { token, config, state }
 }

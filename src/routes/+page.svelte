@@ -18,7 +18,8 @@
 	const pages = [
 		{ name: 'projects', href: '/projects' },
 		{ name: 'sketches', href: '/sketches' },
-		{ name: 'blog', href: '/blog', indev: true }
+		{ name: 'blog', href: '/blog', indev: true },
+		{ name: 'toys', href: '/toys' }
 	]
 </script>
 
@@ -30,7 +31,7 @@
 <div class="grid h-full place-items-center *:col-1 *:row-1">
 	<canvas
 		class:played={state.heroPlayed}
-		class="touch-action-none absolute inset-0 h-screen w-screen"
+		class="absolute inset-0 h-screen w-screen touch-none"
 		{@attach hero(data.points, data.lines)}
 		{@attach autoSizeCanvas}
 	></canvas>
@@ -55,8 +56,6 @@
 		</nav>
 	</main>
 </div>
-
-<a href="/toys/shanvas" class="fixed right-0 bottom-0 opacity-0">Goto Shanvas</a>
 
 <style>
 	canvas {
