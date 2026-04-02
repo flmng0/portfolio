@@ -1,20 +1,19 @@
 <script lang="ts">
-	import { autoSizeCanvas } from '$lib/attachments.svelte'
+	import { autoSizeCanvas, gesturable } from '$lib/attachments.svelte'
 	import type { Attachment } from 'svelte/attachments'
 
 	import { canvas, palette, paint } from './canvas.svelte'
 	import { clamp } from '$lib/whimsy/math'
 
-	const separatorThickness = 1
 	const separatorColor = '#eee'
-	const tileSize = 25
-	const scale = tileSize + separatorThickness
+	let zoom = $state(1.0)
+	const tileSize = $derived(25 * zoom)
+	const separatorThickness = $derived(2 * zoom)
+	const scale = $derived(tileSize + separatorThickness)
 
 	let pan = $state({ x: 0, y: 0 })
-	let pointer = $state({ x: 0, y: 0 })
-
-	let pannedX = $derived(pan.x + pointer.x)
-	let pannedY = $derived(pan.y + pointer.y)
+	let stylusX = $state(0)
+	let stylusY = $state(0)
 
 	let canvasWidth = $state<number>(0)
 	let canvasHeight = $state<number>(0)
@@ -45,20 +44,33 @@
 		}
 	}
 
-	function moveStylus(elem: HTMLElement, pointerX: number, pointerY: number) {
-		const offX = pan.x % scale
-		const offY = pan.y % scale
-
-		const x = Math.floor((pointerX + offX) / scale) * scale - separatorThickness - offX
-		const y = Math.floor((pointerY + offY) / scale) * scale - separatorThickness - offY
-
-		elem.style.transform = `translate(${x}px, ${y}px)`
-	}
-
 	const stylus: Attachment<HTMLElement> = (elem) => {
 		$effect(() => {
-			moveStylus(elem, pointer.x, pointer.y)
+			const x = stylusX * scale - pan.x - separatorThickness
+			const y = stylusY * scale - pan.y - separatorThickness
+			elem.style.transform = `translate(${x}px, ${y}px)`
 		})
+	}
+
+	const getTilePoint = (pointerX: number, pointerY: number) => {
+		const tileX = Math.floor((pointerX + pan.x) / scale)
+		const tileY = Math.floor((pointerY + pan.y) / scale)
+
+		return [tileX, tileY]
+	}
+
+	const handlePointer = (e: PointerEvent) => {
+		const [tileX, tileY] = getTilePoint(e.clientX, e.clientY)
+		stylusX = tileX
+		stylusY = tileY
+
+		const doPaint =
+			canvas.mode === 'brush' &&
+			(e.type === 'pointerup' || (e.pointerType === 'mouse' ? e.buttons & 1 : e.pointerId !== -1))
+
+		if (!doPaint) return
+
+		paint(tileX, tileY)
 	}
 
 	const renderPixels: Attachment<HTMLCanvasElement> = (cvs) => {
@@ -66,50 +78,6 @@
 
 		pan.x = (canvas.width * scale - canvasWidth) / 2
 		pan.y = (canvas.height * scale - canvasHeight) / 2
-
-		cvs.addEventListener('pointerdown', (e) => {
-			pointer.x = e.clientX
-			pointer.y = e.clientY
-		})
-
-		cvs.addEventListener('pointerup', (e) => {
-			if (canvas.mode !== 'brush') return
-
-			pointer.x = e.clientX
-			pointer.y = e.clientY
-
-			const tileX = Math.floor(pannedX / scale)
-			const tileY = Math.floor(pannedY / scale)
-			paint(tileX, tileY, canvas.brush)
-		})
-
-		cvs.addEventListener('pointermove', (e) => {
-			const lastX = pointer.x
-			const lastY = pointer.y
-
-			pointer.x = e.clientX
-			pointer.y = e.clientY
-
-			const down = e.pointerType == 'mouse' ? e.buttons & 1 : e.pointerId !== -1
-			if (!down) return
-
-			switch (canvas.mode) {
-				case 'brush':
-					const tileX = Math.floor(pannedX / scale)
-					const tileY = Math.floor(pannedY / scale)
-					paint(tileX, tileY, canvas.brush)
-					break
-
-				case 'pan':
-					const dx = lastX - pointer.x
-					const dy = lastY - pointer.y
-
-					pan.x = clamp(pan.x + dx, 0, scale * canvas.width - canvasWidth)
-					pan.y = clamp(pan.y + dy, 0, scale * canvas.height - canvasHeight)
-
-					break
-			}
-		})
 
 		const redraw = () => draw(ctx, canvas.pixels)
 
@@ -125,14 +93,28 @@
 			}
 		})
 	}
+
+	function onpan(dx: number, dy: number) {
+		if (canvas.mode !== 'pan') return
+		pan.x = clamp(pan.x + dx, 0, scale * canvas.width - canvasWidth)
+		pan.y = clamp(pan.y + dy, 0, scale * canvas.height - canvasHeight)
+	}
+
+	function onzoom(dz: number, source: 'scroll' | 'pinch') {
+		if (source == 'pinch' && canvas.mode !== 'pan') return
+		zoom = clamp(zoom + dz, 0.5, 1.7)
+	}
 </script>
 
 <canvas
 	bind:clientWidth={canvasWidth}
 	bind:clientHeight={canvasHeight}
+	onpointermove={handlePointer}
+	onpointerup={handlePointer}
 	class="fixed inset-0 size-full touch-none"
 	{@attach autoSizeCanvas}
 	{@attach renderPixels}
+	{@attach gesturable({ onpan, onzoom })}
 ></canvas>
 
 <div

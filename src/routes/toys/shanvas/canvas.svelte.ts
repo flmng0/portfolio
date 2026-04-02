@@ -28,7 +28,8 @@ export function initCanvas(state: Uint8Array, config: { width: number; height: n
 	})
 }
 
-export function paint(x: number, y: number, brush: number) {
+export function paint(x: number, y: number) {
+	const brush = canvas.brush
 	const idx = x + y * canvas.width
 	const oldPixel = canvas.pixels[idx]
 	if (oldPixel === brush) {
