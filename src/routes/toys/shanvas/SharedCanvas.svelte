@@ -130,7 +130,7 @@
 <canvas
 	bind:clientWidth={canvasWidth}
 	bind:clientHeight={canvasHeight}
-	class="fixed inset-0 size-full"
+	class="fixed inset-0 size-full touch-none"
 	{@attach autoSizeCanvas}
 	{@attach renderPixels}
 ></canvas>
