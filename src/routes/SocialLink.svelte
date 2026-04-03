@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import state from '$lib/state.svelte'
 
 	let { delay, social } = $props()

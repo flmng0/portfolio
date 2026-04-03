@@ -1,6 +1,5 @@
-<script lang="ts">
+<script>
 	import { autoSizeCanvas, gesturable } from '$lib/attachments.svelte'
-	import type { Attachment } from 'svelte/attachments'
 
 	import { canvas, palette, paint } from './canvas.svelte'
 	import { clamp } from '$lib/whimsy/math'
@@ -16,13 +15,17 @@
 	let stylusX = $state(0)
 	let stylusY = $state(0)
 
-	let canvasWidth = $state<number>(0)
-	let canvasHeight = $state<number>(0)
+	let canvasWidth = $state(0)
+	let canvasHeight = $state(0)
 
 	let visibleWidth = $derived(1 + canvasWidth / scale)
 	let visibleHeight = $derived(1 + canvasHeight / scale)
 
-	function draw(ctx: CanvasRenderingContext2D, pixels: number[]) {
+	/**
+	 * @param {CanvasRenderingContext2D} ctx
+	 * @param {number[]} pixels
+	 */
+	function draw(ctx, pixels) {
 		ctx.fillStyle = separatorColor
 		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
 
@@ -48,7 +51,8 @@
 		}
 	}
 
-	const stylus: Attachment<HTMLElement> = (elem) => {
+	/** @type {import('svelte/attachments').Attachment<HTMLElement>} */
+	const stylus = (elem) => {
 		$effect(() => {
 			const x = (stylusX - pan.x) * scale - separatorThickness
 			const y = (stylusY - pan.y) * scale - separatorThickness
@@ -56,14 +60,21 @@
 		})
 	}
 
-	const getTilePoint = (pointerX: number, pointerY: number) => {
+	/**
+	 * @param {number} pointerX
+	 * @param {number} pointerY
+	 */
+	const getTilePoint = (pointerX, pointerY) => {
 		const tileX = Math.floor(pointerX / scale + pan.x)
 		const tileY = Math.floor(pointerY / scale + pan.y)
 
 		return [tileX, tileY]
 	}
 
-	const handlePointer = (e: PointerEvent) => {
+	/**
+	 * @param {PointerEvent} e
+	 */
+	const handlePointer = (e) => {
 		const [tileX, tileY] = getTilePoint(e.clientX, e.clientY)
 		stylusX = tileX
 		stylusY = tileY
@@ -77,8 +88,12 @@
 		paint(tileX, tileY)
 	}
 
-	const renderPixels: Attachment<HTMLCanvasElement> = (cvs) => {
-		const ctx = cvs.getContext('2d')!
+	/** @type {import('svelte/attachments').Attachment<HTMLCanvasElement>} */
+	const renderPixels = (cvs) => {
+		const ctx = cvs.getContext('2d')
+		if (ctx === null) {
+			throw new Error('Failed to get 2D context for canvas!')
+		}
 
 		const redraw = () => draw(ctx, canvas.pixels)
 
@@ -100,13 +115,21 @@
 		pan.y = (canvas.height - canvasHeight / scale) / 2
 	})
 
-	function onpan(dx: number, dy: number) {
+	/**
+	 * @param {number} dx
+	 * @param {number} dy
+	 */
+	function onpan(dx, dy) {
 		if (canvas.mode !== 'pan') return
 		pan.x = clamp(pan.x + dx / scale, 0, canvas.width - canvasWidth / scale)
 		pan.y = clamp(pan.y + dy / scale, 0, canvas.height - canvasHeight / scale)
 	}
 
-	function onzoom(dz: number, source: 'scroll' | 'pinch') {
+	/**
+	 * @param {number} dz
+	 * @param {"pinch" | "scroll"} source
+	 */
+	function onzoom(dz, source) {
 		if (source == 'pinch' && canvas.mode !== 'pan') return
 		// TODO: Zoom into center
 		zoom = clamp(zoom + dz, 0.5, 1.7)

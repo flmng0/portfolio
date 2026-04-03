@@ -1,5 +1,4 @@
 ---
-layout: project
 title: Cabinet
 description: >
   Self-hosted invoicing system, targetting freelance developers.

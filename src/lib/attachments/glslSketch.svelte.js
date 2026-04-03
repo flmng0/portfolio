@@ -1,6 +1,8 @@
-import type { Attachment } from 'svelte/attachments'
-
-export default function glslSketch(fragSource: string): Attachment<HTMLCanvasElement> {
+/**
+ * @param {string} fragSource
+ * @returns {import("svelte/attachments").Attachment<HTMLCanvasElement>}
+ */
+export default function glslSketch(fragSource) {
 	const fragPrefix = `#version 300 es
 precision highp float;
 
@@ -16,10 +18,20 @@ void main() {
 }`
 
 	return (cvs) => {
-		const gl = cvs.getContext('webgl2')!
+		const gl = cvs.getContext('webgl2')
+		if (gl === null) {
+			throw new Error('Failed to get webgl2 context!')
+		}
 
-		const compileShader = (source: string, type: GLenum) => {
-			const s = gl.createShader(type)!
+		/**
+		 * @param {string} source
+		 * @param {GLenum} type
+		 */
+		const compileShader = (source, type) => {
+			const s = gl.createShader(type)
+			if (s === null) {
+				throw new Error('Failed to create shader!')
+			}
 			gl.shaderSource(s, source)
 			gl.compileShader(s)
 
@@ -30,7 +42,11 @@ void main() {
 			return s
 		}
 
-		const compileProgram = (vert: WebGLShader, frag: WebGLShader) => {
+		/**
+		 * @param {WebGLShader} vert
+		 * @param {WebGLShader} frag
+		 */
+		const compileProgram = (vert, frag) => {
 			const p = gl.createProgram()
 			gl.attachShader(p, vert)
 			gl.attachShader(p, frag)
@@ -44,7 +60,11 @@ void main() {
 		}
 
 		const quadPoints = [-1.0, 1.0, 1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, -1.0, -1.0]
-		const setupVertexArray = (program: WebGLProgram) => {
+
+		/**
+		 * @param {WebGLProgram} program
+		 */
+		const setupVertexArray = (program) => {
 			const data = new Float32Array(quadPoints)
 			const buffer = gl.createBuffer()
 			const vertexArray = gl.createVertexArray()
@@ -58,13 +78,18 @@ void main() {
 			gl.vertexAttribPointer(aVertexPos, 2, gl.FLOAT, false, 0, 0)
 		}
 
-		const getUniformLocations = (program: WebGLProgram, ...names: string[]) => {
+		/**
+		 * @param {WebGLProgram} program
+		 * @param {string[]} names
+		 * @returns {Record<string, WebGLUniformLocation>}
+		 */
+		const getUniformLocations = (program, ...names) => {
 			const entries = names.map((name) => {
-				const location = gl.getUniformLocation(program, name)!
+				const location = gl.getUniformLocation(program, name)
 				return [name, location]
 			})
 
-			return Object.fromEntries(entries) as Record<string, WebGLUniformLocation>
+			return Object.fromEntries(entries)
 		}
 
 		const vertShader = compileShader(vertSource, gl.VERTEX_SHADER)

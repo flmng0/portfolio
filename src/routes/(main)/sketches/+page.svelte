@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import SketchCard from './SketchCard.svelte'
 
 	let { data } = $props()

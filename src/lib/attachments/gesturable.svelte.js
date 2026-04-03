@@ -1,28 +1,15 @@
 import { dist } from '$lib/whimsy/math'
-import { type Attachment } from 'svelte/attachments'
 
-interface Listeners {
-	onpan?: (dx: number, dy: number) => void
-	onzoom?: (ds: number, source: 'scroll' | 'pinch') => void
-}
+export default function gesturable(listeners) {
+	const pointers = new Map()
 
-type PointerState = {
-	x: number
-	y: number
-	lastX: number
-	lastY: number
-	dx: number
-	dy: number
-	down: boolean
-}
-
-export default function gesturable(listeners: Listeners): Attachment<HTMLElement> {
-	const pointers = new Map<number, PointerState>()
-
-	const updatePointer = (e: PointerEvent) => {
+	/**
+	 * @param {PointerEvent} e
+	 */
+	const updatePointer = (e) => {
 		const previous = pointers.get(e.pointerId)
 
-		let down: boolean
+		let down
 		if (e.type === 'pointerdown') {
 			down = true
 		} else if (e.type === 'pointerup') {
@@ -31,7 +18,7 @@ export default function gesturable(listeners: Listeners): Attachment<HTMLElement
 			down = previous?.down ?? false
 		}
 
-		let state: PointerState
+		let state
 		if (previous !== undefined) {
 			state = {
 				x: e.clientX,
@@ -58,7 +45,11 @@ export default function gesturable(listeners: Listeners): Attachment<HTMLElement
 		return state
 	}
 
-	const handlePinch = (a: PointerState, b: PointerState) => {
+	/**
+	 * @param {import('./gesturable.svelte').PointerState} a
+	 * @param {import('./gesturable.svelte').PointerState} b
+	 */
+	const handlePinch = (a, b) => {
 		const previousDistance = dist([a.lastX, a.lastY], [b.lastX, b.lastY])
 		const newDistance = dist([a.x, a.y], [b.x, b.y])
 
@@ -67,6 +58,7 @@ export default function gesturable(listeners: Listeners): Attachment<HTMLElement
 		listeners.onzoom?.(diffDistance / 200, 'pinch')
 	}
 
+	/** @type {import('svelte/attachments').Attachment<HTMLElement>} */
 	return (elem) => {
 		elem.addEventListener('pointerdown', updatePointer)
 		elem.addEventListener('pointerup', (e) => {
@@ -79,8 +71,8 @@ export default function gesturable(listeners: Listeners): Attachment<HTMLElement
 			if (pointers.size === 1 && state.down) {
 				listeners.onpan?.(state.dx, state.dy)
 			} else if (pointers.size === 2) {
-				const otherKey = pointers.keys().find((k) => k !== e.pointerId)!
-				const other = pointers.get(otherKey)!
+				const otherKey = pointers.keys().find((k) => k !== e.pointerId)
+				const other = pointers.get(otherKey)
 
 				handlePinch(state, other)
 			}

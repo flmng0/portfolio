@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import PostLayout from '$lib/PostLayout.svelte'
 
 	let { data } = $props()

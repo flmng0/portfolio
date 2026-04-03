@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import Controls from './Controls.svelte'
 	import SharedCanvas from './SharedCanvas.svelte'
 	import { setToken } from './api.js'

@@ -1,12 +1,12 @@
-<script lang="ts">
+<script>
 	import { codeToHtml } from 'shiki'
 	let { code, language } = $props()
 
 	let htmlPromise = $derived(codeToHtml(code, { lang: language, theme: 'gruvbox-dark-hard' }))
-	let dialog = $state<HTMLDialogElement>()
+	let dialog = $state()
 </script>
 
-<button onclick={() => dialog!.showModal()} class="btn btn-lift cursor-pointer p-2">
+<button onclick={() => dialog.showModal()} class="btn btn-lift cursor-pointer p-2">
 	View Source
 </button>
 

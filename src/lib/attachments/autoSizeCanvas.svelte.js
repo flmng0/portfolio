@@ -1,14 +1,18 @@
 import { browser } from '$app/environment'
-import type { Attachment } from 'svelte/attachments'
 
-const toResize: HTMLCanvasElement[] = []
+/** @type {HTMLCanvasElement[]} */
+const toResize = []
 
-const resize = (cvs: HTMLCanvasElement) => {
+/**
+ * @param {HTMLCanvasElement} cvs
+ */
+const resize = (cvs) => {
 	cvs.width = cvs.clientWidth
 	cvs.height = cvs.clientHeight
 }
 
-const autoSizeCanvas: Attachment<HTMLCanvasElement> = (cvs) => {
+/** @type {import('svelte/attachments').Attachment<HTMLCanvasElement>} */
+const autoSizeCanvas = (cvs) => {
 	if (browser) {
 		resize(cvs)
 	}

@@ -1,10 +1,13 @@
-<script lang="ts">
+<script>
 	import Move from '$lib/icons/Move.svelte'
 	import ControlButton from './ControlButton.svelte'
 	import PaintBrush from './PaintBrush.svelte'
-	import { canvas, palette, type ControlMode } from './canvas.svelte'
+	import { canvas, palette } from './canvas.svelte'
 
-	const modeButtonProps = (mode: ControlMode) => ({
+	/**
+	 * @param {import('./canvas.svelte').ControlMode} mode
+	 */
+	const modeButtonProps = (mode) => ({
 		onclick: () => (canvas.mode = mode),
 		current: canvas.mode === mode,
 		class: 'bg-neutral-100'

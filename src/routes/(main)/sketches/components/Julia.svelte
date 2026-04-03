@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { glslSketch } from '$lib/attachments.svelte'
 	import shaderSource from './julia.glsl?raw'
 	import SketchCanvas from './SketchCanvas.svelte'

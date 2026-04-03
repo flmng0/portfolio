@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import Header from './Header.svelte'
 
 	let { children, data } = $props()

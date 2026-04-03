@@ -1,9 +1,16 @@
-import type { Attachment } from 'svelte/attachments'
 import Particle from './particle'
-import { clamp, dist, distSq, map, subtract, type Point } from './math'
+import { clamp, dist, distSq, map, subtract } from './math'
 import state from '$lib/state.svelte'
 
 // Assumes that the viewbox for the icon is 0 0 100 100
+
+/**
+ * @typedef Connection
+ *
+ * @property {number} aIdx
+ * @property {number} bIdx
+ * @property {number} originalDistance
+ */
 
 const repelRadius = 75
 const repelScale = 100
@@ -17,17 +24,12 @@ const stretchExtent = 250
 
 const connectionColor = '#555'
 
-type Connection = {
-	aIdx: number
-	bIdx: number
-	originalDistance: number
-}
-
-function drawConnection(
-	ctx: CanvasRenderingContext2D,
-	connection: Connection,
-	particles: Particle[]
-) {
+/**
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {Connection} connection
+ * @param {Particle[]} particles
+ */
+function drawConnection(ctx, connection, particles) {
 	const a = particles[connection.aIdx]
 	const b = particles[connection.bIdx]
 
@@ -44,16 +46,21 @@ function drawConnection(
 	ctx.stroke()
 }
 
-function drawRepeller(ctx: CanvasRenderingContext2D, pointer: Point) {
+/**
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {import('./math').Point} pointer
+ */
+function drawRepeller(ctx, pointer) {
 	ctx.beginPath()
 	ctx.arc(...pointer, repelRadius, 0, 2 * Math.PI)
 	ctx.stroke()
 }
 
-export default function hero(
-	points: [number, number][],
-	lines: [number, number][]
-): Attachment<HTMLCanvasElement> {
+/**
+ * @param {import('./math').Point[]} points
+ * @param {[number, number][]} lines
+ */
+export default function hero(points, lines) {
 	const particles = points.map(([x, y]) => {
 		const centeredX = ((x - 50) / 100) * iconScale
 		const centeredY = ((y - 50) / 100) * iconScale
@@ -69,7 +76,8 @@ export default function hero(
 		return particle
 	})
 
-	const connections: Connection[] = []
+	/** @type {Connection[]} */
+	const connections = []
 
 	for (const [aIdx, bIdx] of lines) {
 		const a = particles[aIdx].origin
@@ -79,13 +87,19 @@ export default function hero(
 		connections.push({ aIdx, bIdx, originalDistance })
 	}
 
-	return (cvs: HTMLCanvasElement) => {
-		const ctx = cvs.getContext('2d')!
+	/** @type {import('svelte/attachments').Attachment<HTMLCanvasElement>} */
+	return (cvs) => {
+		const ctx = cvs.getContext('2d')
+		if (ctx === null) {
+			throw new Error('Failed to get context for hero!')
+		}
+
 		ctx.strokeStyle = connectionColor
 
 		let lastT = performance.now()
-		let pointer: Point
 		let pointerDown = false
+		/** @type {import('./math').Point} */
+		let pointer
 
 		window.addEventListener('pointerdown', () => (pointerDown = true))
 		window.addEventListener('pointerup', () => (pointerDown = false))

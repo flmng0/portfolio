@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import '$lib/app.css'
 	import favicon from '$assets/favicon.svg'
 

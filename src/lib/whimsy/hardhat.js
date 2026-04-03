@@ -1,12 +1,16 @@
-import type { Attachment } from 'svelte/attachments'
 import Particle from './particle'
 import { mag, map } from './math'
 
-const hardhat: Attachment<HTMLElement> = (elem) => {
-	let particle: Particle
-	let lastT: number
-	let rot: number
-	let rotVel: number
+/** @type {import("svelte/attachments").Attachment<HTMLElement>} */
+const hardhat = (elem) => {
+	/** @type {Particle} */
+	let particle
+	/** @type {number} */
+	let lastT
+	/** @type {number} */
+	let rot
+	/** @type {number} */
+	let rotVel
 	let simulating = false
 
 	const simulate = () => {

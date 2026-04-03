@@ -1,6 +1,7 @@
-<script lang="ts">
+<script>
 	import ExternalLink from '$lib/icons/ExternalLink.svelte'
 	import GitHub from '$lib/icons/GitHub.svelte'
+
 	let { project } = $props()
 	const linkClasses = 'btn btn-lift px-3 py-2'
 </script>

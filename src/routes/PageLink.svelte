@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import Hardhat from '$lib/icons/Hardhat.svelte'
 	import state from '$lib/state.svelte'
 	import { hardhat } from '$lib/whimsy'

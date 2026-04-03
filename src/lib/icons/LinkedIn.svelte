@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import linkedInImage from '$assets/InBug-White.png'
 	let props = $props()
 </script>

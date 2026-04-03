@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
 	import { autoSizeCanvas } from '$lib/attachments.svelte'
 
 	let { background = 'white', ...rest } = $props()
