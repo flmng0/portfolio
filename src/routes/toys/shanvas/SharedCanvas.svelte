@@ -4,6 +4,7 @@
 	import { canvas, palette, paint } from './canvas.svelte'
 	import { clamp } from '$lib/whimsy/math'
 	import { onMount } from 'svelte'
+	import { dev } from '$app/environment'
 
 	const separatorColor = '#eee'
 	let zoom = $state(1.0)
@@ -11,12 +12,18 @@
 	const separatorThickness = $derived(2 * zoom)
 	const scale = $derived(tileSize + separatorThickness)
 
-	let pan = $state({ x: 0, y: 0 })
-	let stylusX = $state(0)
-	let stylusY = $state(0)
-
+	// Relative to the center of the screen
+	let centerPan = $state({ x: 0, y: 0 })
 	let canvasWidth = $state(0)
 	let canvasHeight = $state(0)
+
+	let originPan = $derived({
+		x: centerPan.x - canvasWidth / scale / 2,
+		y: centerPan.y - canvasHeight / scale / 2
+	})
+
+	let stylusX = $state(0)
+	let stylusY = $state(0)
 
 	let visibleWidth = $derived(1 + canvasWidth / scale)
 	let visibleHeight = $derived(1 + canvasHeight / scale)
@@ -31,15 +38,15 @@
 
 		for (let y = 0; y < visibleHeight; y++) {
 			for (let x = 0; x < visibleWidth; x++) {
-				const px = Math.floor(pan.x)
-				const py = Math.floor(pan.y)
+				const px = Math.floor(originPan.x)
+				const py = Math.floor(originPan.y)
 
 				const ix = x + px
 				const iy = y + py
 				const idx = ix + iy * canvas.width
 
-				const offX = (pan.x - px) * scale
-				const offY = (pan.y - py) * scale
+				const offX = (originPan.x - px) * scale
+				const offY = (originPan.y - py) * scale
 
 				const rx = (x - 1) * separatorThickness + x * tileSize - offX
 				const ry = (y - 1) * separatorThickness + y * tileSize - offY
@@ -54,8 +61,8 @@
 	/** @type {import('svelte/attachments').Attachment<HTMLElement>} */
 	const stylus = (elem) => {
 		$effect(() => {
-			const x = (stylusX - pan.x) * scale - separatorThickness
-			const y = (stylusY - pan.y) * scale - separatorThickness
+			const x = (stylusX - originPan.x) * scale - separatorThickness
+			const y = (stylusY - originPan.y) * scale - separatorThickness
 			elem.style.transform = `translate(${x}px, ${y}px)`
 		})
 	}
@@ -65,8 +72,8 @@
 	 * @param {number} pointerY
 	 */
 	const getTilePoint = (pointerX, pointerY) => {
-		const tileX = Math.floor(pointerX / scale + pan.x)
-		const tileY = Math.floor(pointerY / scale + pan.y)
+		const tileX = Math.floor(pointerX / scale + originPan.x)
+		const tileY = Math.floor(pointerY / scale + originPan.y)
 
 		return [tileX, tileY]
 	}
@@ -111,8 +118,10 @@
 	}
 
 	onMount(() => {
-		pan.x = (canvas.width - canvasWidth / scale) / 2
-		pan.y = (canvas.height - canvasHeight / scale) / 2
+		centerPan.x = canvas.width / 2
+		centerPan.y = canvas.height / 2
+		stylusX = Math.round(canvas.width / 2)
+		stylusY = Math.round(canvas.height / 2)
 	})
 
 	/**
@@ -121,8 +130,15 @@
 	 */
 	function onpan(dx, dy) {
 		if (canvas.mode !== 'pan') return
-		pan.x = clamp(pan.x + dx / scale, 0, canvas.width - canvasWidth / scale)
-		pan.y = clamp(pan.y + dy / scale, 0, canvas.height - canvasHeight / scale)
+
+		const newX = centerPan.x + dx / scale
+		const newY = centerPan.y + dy / scale
+
+		const cx = canvasWidth / 2 / scale
+		centerPan.x = clamp(newX, cx, canvas.width - cx)
+
+		const cy = canvasHeight / 2 / scale
+		centerPan.y = clamp(newY, cy, canvas.height - cy)
 	}
 
 	/**
@@ -135,6 +151,8 @@
 		zoom = clamp(zoom + dz, 0.5, 1.7)
 	}
 </script>
+
+<span class="fixed top-4 right-4 z-10">{stylusX}, {stylusY}</span>
 
 <canvas
 	bind:clientWidth={canvasWidth}
