@@ -55,9 +55,10 @@ export const load: PageServerLoad = async ({ fetch }) => {
 		return { token, config, state }
 	} catch {
 		const size = 1000
+		const fallbackPallete = ['white', 'black', 'red', 'green', 'blue', 'cyan', 'magenta', 'yellow']
 
 		return {
-			config: { width: size, height: size, offline: true },
+			config: { width: size, height: size, offline: true, palette: fallbackPallete },
 			state: new Uint8Array(size * size)
 		}
 	}

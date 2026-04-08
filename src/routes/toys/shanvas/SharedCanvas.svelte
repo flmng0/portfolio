@@ -1,10 +1,9 @@
 <script>
 	import { autoSizeCanvas, gesturable } from '$lib/attachments.svelte'
 
-	import { canvas, palette, paint } from './canvas.svelte'
+	import { canvas, paint } from './canvas.svelte'
 	import { clamp } from '$lib/whimsy/math'
 	import { onMount } from 'svelte'
-	import { dev } from '$app/environment'
 
 	const separatorColor = '#eee'
 	let zoom = $state(1.0)
@@ -51,7 +50,7 @@
 				const rx = (x - 1) * separatorThickness + x * tileSize - offX
 				const ry = (y - 1) * separatorThickness + y * tileSize - offY
 
-				ctx.fillStyle = palette[pixels[idx]]
+				ctx.fillStyle = canvas.palette[pixels[idx]]
 
 				ctx.fillRect(rx, ry, tileSize, tileSize)
 			}

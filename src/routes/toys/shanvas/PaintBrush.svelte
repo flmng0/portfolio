@@ -8,13 +8,11 @@
 	width="24"
 	height="24"
 	viewBox="0 0 24 24"
-	fill="none"
+	fill="white"
 	stroke-width="2"
 	stroke-linecap="round"
 	stroke-linejoin="round"
 >
-	<path d="M14.622 17.897L2.5 12.5L10 22L14.622 17.897Z" fill={paintColor} id="paintColor" />
-	<!-- <path d="m14.622 17.897-10.68-2.913" stroke="currentColor" id="paintColorLine" /> -->
 	<path
 		d="M18.376 2.622a1 1 0 1 1 3.002 3.002L17.36 9.643a.5.5 0 0 0 0 .707l.944.944a2.41 2.41 0 0 1 0 3.408l-.944.944a.5.5 0 0 1-.707 0L8.354 7.348a.5.5 0 0 1 0-.707l.944-.944a2.41 2.41 0 0 1 3.408 0l.944.944a.5.5 0 0 0 .707 0z"
 		stroke="currentColor"
@@ -25,4 +23,6 @@
 		stroke="currentColor"
 		id="bristlesOutline"
 	/>
+	<!-- <path d="m14.622 17.897-10.68-2.913" stroke="currentColor" id="paintColorLine" /> -->
+	<path d="M14.622 17.897L2.5 12.5L10 22L14.622 17.897Z" fill={paintColor} id="paintColor" />
 </svg>
