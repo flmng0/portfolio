@@ -58,3 +58,16 @@ export function paint(x: number, y: number) {
 		}
 	})
 }
+
+export async function getPngData() {
+	const resp = await fetch(apiPath('/image'), {
+		headers: { Authorization: 'Bearer ' + token }
+	})
+
+	if (!resp.ok) {
+		throw new Error('Failed to get image')
+	}
+
+	const blob = await resp.blob()
+	return URL.createObjectURL(blob)
+}

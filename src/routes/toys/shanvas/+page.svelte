@@ -1,6 +1,7 @@
 <script>
 	import Head from '$lib/Head.svelte'
 	import Controls from './Controls.svelte'
+	import DownloadButton from './DownloadButton.svelte'
 	import SharedCanvas from './SharedCanvas.svelte'
 	import { setToken } from './api.js'
 	import { initCanvas } from './canvas.svelte.js'
@@ -21,6 +22,10 @@
 
 <Controls />
 <SharedCanvas />
+
+{#if !data.config.offline}
+	<DownloadButton />
+{/if}
 
 {#if data.config.offline}
 	<footer class="absolute bottom-1 flex w-full flex-col justify-center px-4 text-center">
