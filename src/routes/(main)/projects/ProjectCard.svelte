@@ -1,17 +1,14 @@
 <script>
 	import ExternalLink from '$lib/icons/ExternalLink.svelte'
 	import GitHub from '$lib/icons/GitHub.svelte'
+	import PostCard from '$lib/PostCard.svelte'
 
 	let { project } = $props()
 	const linkClasses = 'btn btn-lift px-3 py-2'
 </script>
 
-<article class="flex h-full flex-col">
-	<h2 class="mb-2 font-mono text-xl">{project.title}</h2>
-
-	<p class="h-full text-neutral-700">{project.description}</p>
-
-	<footer class="mt-8 flex flex-wrap justify-end gap-2">
+<PostCard title={project.title} description={project.description}>
+	{#snippet buttons()}
 		{#if project.source}
 			<a class="{linkClasses} btn-github" href={project.source} target="_blank">
 				<span>Source Code</span>
@@ -24,11 +21,11 @@
 				<ExternalLink class="inline-block size-4" />
 			</a>
 		{/if}
-		{#if project.post}
-			<a class="{linkClasses} btn-read" href="/projects/{project.slug}">Read More</a>
+		{#if project.postSlug}
+			<a class="{linkClasses} btn-read" href="/blog/{project.postSlug}">Read More</a>
 		{/if}
-	</footer>
-</article>
+	{/snippet}
+</PostCard>
 
 <style>
 	.btn-visit {

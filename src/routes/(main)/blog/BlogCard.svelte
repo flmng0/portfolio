@@ -1,14 +1,12 @@
 <script>
 	import PostCard from '$lib/PostCard.svelte'
 
-	let { sketch } = $props()
+	let { post } = $props()
 </script>
 
-<PostCard title={sketch.data.title} description={sketch.data.description}>
+<PostCard title={post.data.title} description={post.data.description}>
 	{#snippet buttons()}
-		<a class="btn btn-visit-sketch btn-lift px-3 py-2" href="/sketches/{sketch.slug}">
-			Visit Sketch
-		</a>
+		<a class="btn btn-visit-sketch btn-lift px-3 py-2" href="/blog/{post.slug}">Read More</a>
 	{/snippet}
 </PostCard>
 

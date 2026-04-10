@@ -18,7 +18,7 @@
 	const pages = [
 		{ name: 'projects', href: '/projects' },
 		{ name: 'sketches', href: '/sketches' },
-		{ name: 'blog', href: '/blog', indev: true },
+		{ name: 'blog', href: '/blog' },
 		{ name: 'toys', href: '/toys' }
 	]
 </script>

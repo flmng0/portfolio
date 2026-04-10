@@ -1,10 +1,16 @@
-import { parsePost } from '$lib/blogLoader'
-import schema from '../schema'
+import { sketches } from '$content'
+import { error } from '@sveltejs/kit'
 
 /** @type {import("./$types").PageLoad} */
 export const load = async ({ params }) => {
-	const slug = params.slug
-	const module = await import(`../${slug}.md`)
+	const sketch = sketches.getEntry(params.slug)
 
-	return parsePost(module, schema)
+	if (sketch === undefined || sketch.body === undefined) {
+		throw error(404, 'Sketch with slug ' + params.slug + ' not found!')
+	}
+
+	return {
+		body: sketch.body,
+		...sketch.data
+	}
 }

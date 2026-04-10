@@ -5,7 +5,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.title} | Projects | timd.dev</title>
+	<title>{data.title} | Blog | timd.dev</title>
 	<meta name="description" content={data.metaDescription ?? data.description} />
 </svelte:head>
 
