@@ -23,3 +23,5 @@ export const socials = [
 		variant: 'email'
 	}
 ]
+
+export const site = 'https://timd.dev'

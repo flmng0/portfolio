@@ -1,12 +1,13 @@
 <script>
 	import { sketches } from '$content'
+	import Head from '$lib/Head.svelte'
 	import SketchCard from './SketchCard.svelte'
 </script>
 
-<svelte:head>
-	<title>Sketches | timd.dev</title>
-	<meta name="description" content="Fun creative coding toys (sketches) developed by Tim Davis." />
-</svelte:head>
+<Head
+	title="Sketches | timd.dev"
+	description="Fun creative coding sketches developed by Tim Davis."
+/>
 
 <main class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 lg:gap-12">
 	{#each sketches.entries as sketch}

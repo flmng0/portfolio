@@ -8,6 +8,7 @@
 	import { hero } from '$lib/whimsy'
 	import { autoSizeCanvas } from '$lib/attachments.svelte.js'
 	import { socials } from '$lib/consts.js'
+	import Head from '$lib/Head.svelte'
 
 	beforeNavigate(() => {
 		state.heroPlayed = true
@@ -23,10 +24,7 @@
 	]
 </script>
 
-<svelte:head>
-	<title>timd.dev</title>
-	<meta name="description" content="Portfolio of Australian web designer: Tim Davis." />
-</svelte:head>
+<Head title="timd.dev" description="Portfolio of Australian web designer: Tim Davis." />
 
 <div class="grid h-full place-items-center *:col-1 *:row-1">
 	<canvas

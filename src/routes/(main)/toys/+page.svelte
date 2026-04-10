@@ -1,4 +1,5 @@
 <script>
+	import Head from '$lib/Head.svelte'
 	import ToyCard from './ToyCard.svelte'
 
 	const toys = [
@@ -12,10 +13,10 @@
 	]
 </script>
 
-<svelte:head>
-	<title>Toys and Fun | timd.dev</title>
-	<meta name="description" content="Fun web toys created by Tim Davis." />
-</svelte:head>
+<Head
+	title="Toys and Fun | timd.dev"
+	description="Fun web toys and experiments created by Tim Davis."
+/>
 
 <section class="grid">
 	{#each toys as toy}

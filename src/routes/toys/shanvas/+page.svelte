@@ -1,4 +1,5 @@
 <script>
+	import Head from '$lib/Head.svelte'
 	import Controls from './Controls.svelte'
 	import SharedCanvas from './SharedCanvas.svelte'
 	import { setToken } from './api.js'
@@ -13,10 +14,10 @@
 	initCanvas(data.state, data.config)
 </script>
 
-<svelte:head>
-	<title>Shared Canvas | Toys and Fun | timd.dev</title>
-	<meta name="description" content="Large, real-time synchronised canvas by Tim Davis." />
-</svelte:head>
+<Head
+	title="Shared Canvas | Toys and Fun | timd.dev"
+	description="Large, real-time, synchronised canvas by Tim Davis."
+/>
 
 <Controls />
 <SharedCanvas />
