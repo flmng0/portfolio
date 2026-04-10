@@ -3,7 +3,8 @@ title: Cabinet
 description: >
   Post-development write-up about my self-hosted invoicing system for freelancers.
 metaDescription: >
-  Post-development blog about Tim Davis' self-hosted invoicing system for freelancers.
+  A write-up by Tim Davis, which details Cabinet. Cabinet is Tim's open-source, self-hosted invoicing system for freelancers, written in Elixir and Phoenix.
+published: 2025-12-11
 ---
 
 <script>

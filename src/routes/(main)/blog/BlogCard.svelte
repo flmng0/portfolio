@@ -4,7 +4,7 @@
 	let { post } = $props()
 </script>
 
-<PostCard title={post.data.title} description={post.data.description}>
+<PostCard data={post.data}>
 	{#snippet buttons()}
 		<a class="btn btn-visit-sketch btn-lift px-3 py-2" href="/blog/{post.slug}">Read More</a>
 	{/snippet}

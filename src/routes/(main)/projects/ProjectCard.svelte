@@ -7,7 +7,7 @@
 	const linkClasses = 'btn btn-lift px-3 py-2'
 </script>
 
-<PostCard title={project.title} description={project.description}>
+<PostCard data={project}>
 	{#snippet buttons()}
 		{#if project.source}
 			<a class="{linkClasses} btn-github" href={project.source} target="_blank">

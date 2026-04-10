@@ -58,24 +58,25 @@ function makeCollection(entries, schema) {
 	}
 }
 
-const BlogPost = v.object({
+const IsoDateString = v.pipe(v.string(), v.toDate())
+
+const Article = v.object({
 	title: v.string(),
 	description: v.string(),
-	metaDescription: v.optional(v.string())
+	metaDescription: v.optional(v.string()),
+	tags: v.optional(v.array(v.string())),
+	published: IsoDateString,
+	modified: v.optional(IsoDateString)
 })
+const BlogPost = Article
 export const blogPosts = makeCollection(import.meta.glob('./blog/*.md', { eager: true }), BlogPost)
 
-const Sketch = v.object({
-	title: v.string(),
-	description: v.string(),
-	metaDescription: v.optional(v.string())
-})
+const Sketch = Article
 export const sketches = makeCollection(import.meta.glob('./sketches/*.md', { eager: true }), Sketch)
 
 const Project = v.object({
 	title: v.string(),
 	description: v.string(),
-	metaDescription: v.optional(v.string()),
 	source: v.optional(v.string()),
 	postSlug: v.optional(v.string()),
 	link: v.optional(v.string())
