@@ -3,4 +3,4 @@
 	let props = $props()
 </script>
 
-<img {...props} src={linkedInImage} alt="LinkedIn" />
+<img {...props} width="840" height="790" src={linkedInImage} alt="LinkedIn" />

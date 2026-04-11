@@ -6,7 +6,6 @@ export const load: LayoutLoad = (data) => {
 
 	const parts = data.url.pathname.split('/')
 	parts.shift()
-	parts.pop()
 
 	for (const part of parts) {
 		path += '/' + part
