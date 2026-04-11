@@ -24,6 +24,32 @@ body:has(dialog[open]) {
 	@apply select-none;
 }
 
+details {
+	@apply mx-2 bg-neutral-200 p-2;
+
+	& > summary {
+		@apply font-semibold;
+		cursor: pointer;
+		position: relative;
+
+		&::after {
+			@apply transition-transform;
+			position: absolute;
+			right: 0;
+			content: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWNoZXZyb24tcmlnaHQtaWNvbiBsdWNpZGUtY2hldnJvbi1yaWdodCI+PHBhdGggZD0ibTkgMTggNi02LTYtNiIvPjwvc3ZnPg==');
+			transform-origin: center 0.75em;
+		}
+
+		&::marker {
+			content: '';
+		}
+	}
+
+	&[open] > summary::after {
+		transform: rotate(90deg);
+	}
+}
+
 ::selection {
 	@apply bg-fuchsia-400 text-white;
 }
@@ -100,6 +126,7 @@ body:has(dialog[open]) {
 	--animate-blur: 500ms blur ease-in forwards;
 	--animate-fade-in: 1s fade-in ease-in both;
 	--animate-slide-in: 500ms slide-in ease-out backwards;
+	--animate-blink: 500ms blink ease-in 2;
 
 	--content: min(70ch, 100%);
 	--blur: url(/rand.png);
@@ -133,6 +160,18 @@ body:has(dialog[open]) {
 		100% {
 			opacity: 1;
 			transform: translateY(0);
+		}
+	}
+
+	@keyframes blink {
+		0% {
+			background-color: transparent;
+		}
+		50% {
+			background-color: yellow;
+		}
+		100% {
+			background-color: transparent;
 		}
 	}
 }

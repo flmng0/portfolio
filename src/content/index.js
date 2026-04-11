@@ -60,15 +60,26 @@ function makeCollection(entries, schema) {
 
 const IsoDateString = v.pipe(v.string(), v.toDate())
 
-const Article = v.object({
+const PublishData = v.union([
+	v.object({
+		draft: v.literal(true)
+	}),
+	v.object({
+		published: IsoDateString,
+		modified: v.optional(IsoDateString)
+	})
+])
+
+const ArticleDetails = v.object({
 	title: v.string(),
 	description: v.string(),
 	metaDescription: v.optional(v.string()),
-	tags: v.optional(v.array(v.string())),
-	published: IsoDateString,
-	modified: v.optional(IsoDateString)
+	tags: v.optional(v.array(v.string()))
 })
+const Article = v.intersect([PublishData, ArticleDetails])
+
 const BlogPost = Article
+
 export const blogPosts = makeCollection(import.meta.glob('./blog/*.md', { eager: true }), BlogPost)
 
 const Sketch = Article

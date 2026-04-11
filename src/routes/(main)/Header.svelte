@@ -17,13 +17,9 @@
 			{#each breadcrumbs as crumb, i}
 				<span class="text-lg text-neutral-400" aria-hidden="true">/</span>
 				<li aria-current={page.url.pathname == crumb.href ? 'page' : null}>
-					{#if i == breadcrumbs.length - 1}
-						<span>{crumb.name}</span>
-					{:else}
-						<a href={crumb.href} class="underline decoration-neutral-400 hover:no-underline">
-							{crumb.name}
-						</a>
-					{/if}
+					<a href={crumb.href} class="underline decoration-neutral-400 hover:no-underline">
+						{crumb.name}
+					</a>
 				</li>
 			{/each}
 		</ol>

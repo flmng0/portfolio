@@ -1,5 +1,5 @@
 ---
-title: Cabinet
+title: "Cabinet: Easy Invoicing For Freelancers"
 description: >
   Post-development write-up about my self-hosted invoicing system for freelancers.
 metaDescription: >

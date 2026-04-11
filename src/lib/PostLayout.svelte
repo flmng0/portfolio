@@ -26,8 +26,22 @@
 </article>
 
 <style>
-	article :global(pre) {
-		border-radius: 0;
-		box-shadow: var(--shadow-solid);
+	:global(html) {
+		scroll-behavior: smooth;
+		scroll-padding-top: 1rem;
+	}
+
+	article {
+		margin-inline: auto;
+
+		:global {
+			pre {
+				border-radius: 0;
+				box-shadow: var(--shadow-solid);
+			}
+			:is(h1, h2, h3, h4):target {
+				animation: var(--animate-blink);
+			}
+		}
 	}
 </style>

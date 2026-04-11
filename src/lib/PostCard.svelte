@@ -9,21 +9,24 @@
 	}
 </script>
 
-<article class="flex h-full flex-col gap-x-2">
+<article class="row-span-4 grid h-full grid-rows-subgrid flex-col gap-x-2 gap-y-1">
 	<h2 class="font-mono text-xl">{data.title}</h2>
 
-	{#if data.published}
-		<div class="mb-3 text-right font-mono text-sm text-neutral-600">
+	<div
+		class="text-right font-mono text-sm text-neutral-600"
+		class:hidden={data.published === undefined}
+	>
+		{#if data.published}
 			<time>{dateString(data.published)}</time>
 			{#if data.modified}
 				<time>{dateString(data.modified)}</time>
 			{/if}
-		</div>
-	{/if}
+		{/if}
+	</div>
 
 	<p class="flex-grow text-neutral-700">{data.description}</p>
 
-	<footer class="mt-4 flex flex-wrap justify-end gap-2 font-mono text-sm md:mt-8">
+	<footer class="flex flex-wrap justify-end gap-2 font-mono text-sm md:mt-8">
 		{@render buttons()}
 	</footer>
 </article>
