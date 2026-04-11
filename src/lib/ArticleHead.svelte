@@ -16,11 +16,11 @@
 
 <svelte:head>
 	<meta property="article:author" content="Timothy Davis" />
-	<meta property="article:published_time" content={published.toISOString()} />
-	<meta property="article:modified_time" content={modified.toISOString()} />
+	<meta property="article:published_time" content={published?.toISOString()} />
+	<meta property="article:modified_time" content={modified?.toISOString()} />
 
 	{#if section}
-	<meta property="article:section" content={section} />
+		<meta property="article:section" content={section} />
 	{/if}
 
 	{#each tags as tag}

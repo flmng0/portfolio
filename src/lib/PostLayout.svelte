@@ -38,6 +38,10 @@
 			pre {
 				border-radius: 0;
 				box-shadow: var(--shadow-solid);
+
+				details > & {
+					box-shadow: unset;
+				}
 			}
 			:is(h1, h2, h3, h4):target {
 				animation: var(--animate-blink);
