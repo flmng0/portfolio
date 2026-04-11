@@ -19,7 +19,7 @@ When I was designing it, I tried my best to make it re-usable for others in the 
 
 See below for a screenshot of an example invoice:
 
-![Example Invoice]({exampleInvoice})
+<img class="bg-neutral-100" src={exampleInvoice} alt="Example Invoice" width="672" height="1031">
 
 
 ## Configuration
