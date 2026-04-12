@@ -1,11 +1,11 @@
 ---
-title: Specifying Database Column Names in Malli Schemas
-description: Description of a Malli transformer, which allows the user to specify the a database column name for map fields.
+title: Mapping Column Names with Malli Schemas
+description: Clojure development blog on how, and why, I made my own Malli transformer, which allows the user to map database column names to Clojure's map keys.
 published: 2026-04-12
 banner: /banners/blog/malli-db-transformer.png
 ---
 
-# Specifying Database Column Names in Malli Schemas
+# Mapping Column Names with Malli Schemas
 
 *Not interested in the rambling? [Jump straight to my solution.](#solution)*
 

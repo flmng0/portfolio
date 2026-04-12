@@ -1,6 +1,6 @@
 ---
 title: Build a Shared Canvas Backend with Go
-description: How I built a self-hosted real-time API in Go, to draw with my friends and family from afar.
+description: How I built a self-hosted real-time API in Go, to draw with my friends and family from afar. In this part, I detail the decisions surrounding the backend.
 published: 2026-04-11
 banner: /banners/blog/shanvas-backend.png
 ---
