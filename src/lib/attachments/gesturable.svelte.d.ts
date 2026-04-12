@@ -2,7 +2,8 @@ import { Attachment } from 'svelte/attachments'
 
 interface Listeners {
 	onpan?: (dx: number, dy: number) => void
-	onzoom?: (ds: number, source: 'scroll' | 'pinch') => void
+	onzoom?: (ds: number) => void
+	ontap?: (x: number, y: number) => void
 }
 
 type PointerState = {

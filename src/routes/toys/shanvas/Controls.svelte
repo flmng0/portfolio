@@ -1,17 +1,7 @@
 <script>
-	import Move from '$lib/icons/Move.svelte'
 	import ControlButton from './ControlButton.svelte'
 	import PaintBrush from './PaintBrush.svelte'
 	import { canvas } from './canvas.svelte'
-
-	/**
-	 * @param {import('./canvas.svelte').ControlMode} mode
-	 */
-	const modeButtonProps = (mode) => ({
-		onclick: () => (canvas.mode = mode),
-		current: canvas.mode === mode,
-		class: 'bg-neutral-100'
-	})
 </script>
 
 <div
@@ -21,28 +11,14 @@
 		'portrait:top-1/2 portrait:left-2 portrait:-translate-y-1/2 portrait:flex-col'
 	]}
 >
-	<ControlButton {...modeButtonProps('pan')}>
-		<Move class="size-5 md:size-6" />
-	</ControlButton>
-
 	<div class="flex gap-1 overflow-auto md:gap-2 portrait:flex-col">
 		{#each canvas.palette as color, brush}
-			<ControlButton
-				onclick={() => {
-					canvas.mode = 'brush'
-					canvas.brush = brush
-				}}
-				current={canvas.mode == 'brush' && canvas.brush === brush}
-			>
+			<ControlButton onclick={() => (canvas.brush = brush)} current={canvas.brush === brush}>
 				<div style:background-color={color} class="size-full"></div>
 				<span class="hidden">{color}</span>
 			</ControlButton>
 		{/each}
 	</div>
 
-	{#if canvas.mode == 'brush'}
-		<PaintBrush paintColor={canvas.palette[canvas.brush]} class="size-6" />
-	{:else if canvas.mode == 'pan'}
-		<Move class="size-5 md:size-6" />
-	{/if}
+	<PaintBrush paintColor={canvas.palette[canvas.brush]} class="size-6" />
 </div>

@@ -67,6 +67,15 @@
 	}
 
 	/**
+	 * @param {PointerEvent} e
+	 */
+	const moveStylus = (e) => {
+		const [tileX, tileY] = getTilePoint(e.clientX, e.clientY)
+		stylusX = tileX
+		stylusY = tileY
+	}
+
+	/**
 	 * @param {number} pointerX
 	 * @param {number} pointerY
 	 */
@@ -78,18 +87,13 @@
 	}
 
 	/**
-	 * @param {PointerEvent} e
+	 * @param {number} x
+	 * @param {number} y
 	 */
-	const handlePointer = (e) => {
-		const [tileX, tileY] = getTilePoint(e.clientX, e.clientY)
+	const ontap = (x, y) => {
+		const [tileX, tileY] = getTilePoint(x, y)
 		stylusX = tileX
 		stylusY = tileY
-
-		const doPaint =
-			canvas.mode === 'brush' &&
-			(e.type === 'pointerup' || (e.pointerType === 'mouse' ? e.buttons & 1 : e.pointerId !== -1))
-
-		if (!doPaint) return
 
 		paint(tileX, tileY)
 	}
@@ -128,8 +132,6 @@
 	 * @param {number} dy
 	 */
 	function onpan(dx, dy) {
-		if (canvas.mode !== 'pan') return
-
 		const newX = centerPan.x + dx / scale
 		const newY = centerPan.y + dy / scale
 
@@ -142,12 +144,9 @@
 
 	/**
 	 * @param {number} dz
-	 * @param {"pinch" | "scroll"} source
 	 */
-	function onzoom(dz, source) {
-		if (source == 'pinch' && canvas.mode !== 'pan') return
-		// TODO: Zoom into center
-		zoom = clamp(zoom + dz, 0.5, 1.7)
+	function onzoom(dz) {
+		zoom = clamp(zoom + dz, 0.4, 1.7)
 	}
 </script>
 
@@ -156,12 +155,11 @@
 <canvas
 	bind:clientWidth={canvasWidth}
 	bind:clientHeight={canvasHeight}
-	onpointermove={handlePointer}
-	onpointerup={handlePointer}
+	onpointermove={moveStylus}
 	class="fixed inset-0 size-full touch-none"
 	{@attach autoSizeCanvas}
 	{@attach renderPixels}
-	{@attach gesturable({ onpan, onzoom })}
+	{@attach gesturable({ onpan, onzoom, ontap })}
 ></canvas>
 
 <div

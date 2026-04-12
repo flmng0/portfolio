@@ -9,7 +9,6 @@ export const canvas = $state({
 	width: 0,
 	height: 0,
 	brush: 1,
-	mode: 'pan' as ControlMode,
 	offline: false
 })
 

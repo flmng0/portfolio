@@ -18,27 +18,25 @@ export default function gesturable(listeners) {
 			down = previous?.down ?? false
 		}
 
-		let state
+		let dx, dy
 		if (previous !== undefined) {
-			state = {
-				x: e.clientX,
-				y: e.clientY,
-				lastX: previous.x,
-				lastY: previous.y,
-				dx: previous.x - e.clientX,
-				dy: previous.y - e.clientY,
-				down
-			}
+			dx = previous.x - e.clientX
+			dy = previous.y - e.clientY
 		} else {
-			state = {
-				x: e.clientX,
-				y: e.clientY,
-				lastX: e.clientX,
-				lastY: e.clientY,
-				dx: 0,
-				dy: 0,
-				down
-			}
+			dx = e.clientX
+			dy = e.clientY
+		}
+
+		let state = {
+			x: e.clientX,
+			y: e.clientY,
+			lastX: previous?.x ?? e.clientX,
+			lastY: previous?.y ?? e.clientY,
+			startX: previous?.startX ?? e.clientX,
+			startY: previous?.startY ?? e.clientY,
+			dx,
+			dy,
+			down
 		}
 
 		pointers.set(e.pointerId, state)
@@ -55,14 +53,29 @@ export default function gesturable(listeners) {
 
 		const diffDistance = newDistance - previousDistance
 
-		listeners.onzoom?.(diffDistance / 200, 'pinch')
+		listeners.onzoom?.(diffDistance / 200)
 	}
 
 	/** @type {import('svelte/attachments').Attachment<HTMLElement>} */
 	return (elem) => {
-		elem.addEventListener('pointerdown', updatePointer)
+		let didPan = false
+		let didPinch = false
+
+		elem.addEventListener('pointerdown', (e) => {
+			updatePointer(e)
+		})
 		elem.addEventListener('pointerup', (e) => {
 			pointers.delete(e.pointerId)
+
+			if (pointers.size == 0) {
+				if (didPan || didPinch) {
+					didPan = false
+					didPinch = false
+					return
+				}
+
+				listeners.ontap?.(e.clientX, e.clientY)
+			}
 		})
 
 		elem.addEventListener('pointermove', (e) => {
@@ -70,16 +83,18 @@ export default function gesturable(listeners) {
 
 			if (pointers.size === 1 && state.down) {
 				listeners.onpan?.(state.dx, state.dy)
+				didPan = didPan || dist([state.startX, state.startY], [state.x, state.y]) > 10
 			} else if (pointers.size === 2) {
 				const otherKey = pointers.keys().find((k) => k !== e.pointerId)
 				const other = pointers.get(otherKey)
 
 				handlePinch(state, other)
+				didPinch = true
 			}
 		})
 
 		elem.addEventListener('wheel', (e) => {
-			listeners.onzoom?.(-e.deltaY / 100, 'scroll')
+			listeners.onzoom?.(-e.deltaY / 100)
 		})
 	}
 }
