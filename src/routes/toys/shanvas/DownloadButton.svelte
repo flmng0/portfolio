@@ -17,11 +17,14 @@
 
 {#if imageDataUrl}
 	<dialog
-		class="absolute z-10 grid size-full place-items-center bg-transparent"
+		class="absolute z-10 grid size-full cursor-pointer place-items-center bg-transparent"
 		onclose={() => (imageDataUrl = null)}
+		onclick={(e) => {
+			e.target === e.currentTarget && (imageDataUrl = null)
+		}}
 		{@attach open}
 	>
-		<div class="bg-white p-8 shadow-solid">
+		<div class="cursor-default bg-white p-8 shadow-solid">
 			{#await imageDataUrl then imageDataUrl}
 				<a href={imageDataUrl} download="sharedcanvas.png">Download!</a>
 			{/await}
