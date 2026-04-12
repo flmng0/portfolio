@@ -2,6 +2,7 @@
 title: Specifying Database Column Names in Malli Schemas
 description: Description of a Malli transformer, which allows the user to specify the a database column name for map fields.
 published: 2026-04-12
+banner: /banners/blog/malli-db-transformer.png
 ---
 
 # Specifying Database Column Names in Malli Schemas
@@ -14,6 +15,8 @@ purposes.
 
 Lisp languages have always interested me, and I have some experience with the
 Java ecosystem, so I thought Clojure would be a good Lisp to start with.
+
+## Contents
 
 ## Project Description
 

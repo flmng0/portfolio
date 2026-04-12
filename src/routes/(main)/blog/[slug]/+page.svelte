@@ -9,6 +9,7 @@
 	title="{data.title} | Blog | timd.dev"
 	description={data.metaDescription ?? data.description}
 	published={data.published}
+	image={data.banner}
 />
 
 <PostLayout>

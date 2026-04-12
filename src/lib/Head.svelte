@@ -1,7 +1,7 @@
 <script>
 	import { site } from './consts'
 	import { page } from '$app/state'
-	let { title, description, image = '/default-banner.png', type = 'website' } = $props()
+	let { title, description, image = '/banners/default.png', type = 'website' } = $props()
 
 	let imagePath = $derived(new URL(image, site).toString())
 	let url = $derived(new URL(page.url.pathname, site).toString())
