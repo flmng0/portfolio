@@ -27,6 +27,27 @@ export function initCanvas(
 	onMount(() => {
 		const eventSource = new EventSource(apiPath('/sse?token=' + token))
 
+		document.addEventListener('visibilitychange', (e) => {
+			if (document.visibilityState === 'hidden') {
+				return
+			}
+
+			console.log('Visibility returned, refreshing pixels!')
+
+			// refresh pixels from API
+			//
+			// TODO: Consider a /diff endpoint which can use the "lastEventId"
+			// of the event source.
+			fetch(apiPath('/'), {
+				headers: { Authorization: 'Bearer ' + token }
+			})
+				.then((res) => res.blob())
+				.then((blob) => blob.bytes())
+				.then((bytes) => {
+					canvas.pixels = Array.from(bytes)
+				})
+		})
+
 		eventSource.addEventListener('paint', (e) => {
 			const { x, y, brush } = JSON.parse(e.data)
 			const idx = x + y * canvas.width
