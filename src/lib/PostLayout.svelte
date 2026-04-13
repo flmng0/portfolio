@@ -1,5 +1,5 @@
 <script>
-	let { children } = $props()
+	let { children, previous = null, next = null } = $props()
 </script>
 
 <svelte:head>
@@ -23,6 +23,14 @@
 	<main>
 		{@render children()}
 	</main>
+
+	{#if previous || next}
+		<!-- Consider having this bleed over the main layout -->
+		<footer class="mt-8 flex flex-col gap-y-2">
+			{@render previous?.()}
+			{@render next?.()}
+		</footer>
+	{/if}
 </article>
 
 <style>

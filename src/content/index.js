@@ -75,7 +75,9 @@ const ArticleDetails = v.object({
 	description: v.string(),
 	metaDescription: v.optional(v.string()),
 	banner: v.optional(v.string()),
-	tags: v.optional(v.array(v.string()))
+	tags: v.optional(v.array(v.string())),
+	prev: v.optional(v.string()),
+	next: v.optional(v.string())
 })
 const Article = v.intersect([PublishData, ArticleDetails])
 
