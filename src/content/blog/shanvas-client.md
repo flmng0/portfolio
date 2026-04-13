@@ -1,65 +1,128 @@
 ---
-title: Build a Shared Canvas Frontend with Svelte
-description: How I display my self-hosted real-time shared canvas with Svelte, so I can draw with my friends and family.
-draft: true
+title: Display a Real-Time Shared Canvas with Svelte
+description: Learn how I implemented a tile-based pixel image board using JavaScript, Svelte and the HTML5 Canvas - including gesture based panning, zooming, and more.
+published: 2026-04-13
+prev: shanvas-backend
 ---
 
-## The Client
+<script>
+  import * as shanvas from "./shanvas";
+</script>
 
-Now that we have the backend handling and serving our canvas, we need a way to
-display it. Since we are using SvelteKit, we can load all of our initial
-parameters from the `+page.js` or `page.server.js` file.
 
-For the sake of this post, I will prefix any of our API endpoints with `/api`.
+# Building a Shared Canvas: Part Two - The Client
+---
 
-Our initial state consists of:
-- The state of the pixels
-- The dimensions of the canvas
-- Which colours are in our palette.
+## Foreword
 
-We have the `/` endpoint to load the pixels, and I glossed over it, but we also
-have a `/config` endpoint. The `/config` endpoint returns the canvas dimensions
-and which colours we will use.
+In the [previous part](/blog/shanvas-backend), we built a backend to serve a
+paletted canvas of pixels. The backend also has an endpoint which sends events
+from other users, to be received by an [`EventSource`][event-source].
 
-So, in our `+page.js`:
+For this part, first we will explore drawing the canvas to the screen, and
+later we will go over connecting the canvas to our real-time canvas.
 
-```js
-// +page.js
-/** @type {import('./$types').PageLoad} */
-export const load: PageLoad = async ({ fetch }) => {
-  const configPromise = fetch('/api/config')
-    .then((res) => res.json())
+This tutorial assumes you are moderately familiar with Svelte(Kit) and the HTML
+Canvas API, and that you have a working SvelteKit project. Please see the
+[Svelte Tutorial][svelte-tut] or the [Canvas API Docs][html-canvas] if you are
+not familiar with both.
 
-  const statePromise = fetch('/api/')
-    .then((res) => res.blob())
-    .then((blob) => blob.bytes())
+<!-- By the end of this, we should have something looking like: -->
+<!---->
+<!-- <comp.FinalProduct /> -->
 
-  const [config, state] = await Promise.all([configPromise, statePromise])
+[event-source]: https://developer.mozilla.org/en-US/docs/Web/API/EventSource
+[svelte-tut]: https://svelte.dev/tutorial
+[html-canvas]: https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API
 
-  return { config, state }
-}
+## Contents
+
+## Acquiring The Context And Drawing Tiles
+
+With Svelte 5, we can use the `@attach` directive ([docs][attachments]) for any
+client-side logic that needs access to an Element. For example:
+
+```svelte
+<script>
+  function printText(elem) {
+    console.log(elem.textContent);
+  }
+</script>
+
+<h1 {@attach printText}>Hello, Svelte 5!</h1>
+<p {@attach printText}>Attachments are awesome.</p>
 ```
 
-To handle our front-end state, we will make a `canvas.svelte.js` file. This
-way, we can share our state between Svelte components.
+Loading the above snippet would print "Hello, Svelte 5!" and then "Attachments
+are awesome." to the console.
 
-```js
-// canvas.svelte.js
+This is important, since SvelteKit will execute code in our `<script>` block
+for server-side rendering, as well as on the browser. Using attachments, we can
+ensure access to the element object.
 
-export const canvas = $state({
-  pixels: [],
-  palette: [],
-  width: 0,
-  height: 0,
-  brushId: 1,
-})
+Let's draw some tiles on a canvas now:
 
-export function initCanvas(state, config) {
-  canvas.pixels = Array.from(state)
-  canvas.width = config.width
-  canvas.height = config.height
-  canvas.palette = config.palette
-}
+```svelte
+<script>
+  const TILE_COLUMNS = 200
+  const TILE_ROWS = 200
+  const TILE_SIZE = 20
+
+  function drawTiles(context) {
+    const { width, height } = context.canvas
+
+    const visibleColumns = Math.ceil(width / TILE_SIZE)
+    const visibleRows = Math.ceil(height / TILE_SIZE)
+
+    for (let y = 0; y < visibleRows; y++) {
+      for (let x = 0; x < visibleColumns; x++) {
+        const hue = x * 5 + y * visibleColumns
+
+        context.fillStyle = `hsl(${hue}, 100%, 50%)`
+        context.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+        context.strokeRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+      }
+    }
+  }
+
+  function tileDrawer(cvs) {
+    const context = cvs.getContext('2d')
+    drawTiles(context)
+  }
+</script>
+
+<canvas width="500" height="500" {@attach tileDrawer}></canvas>
 ```
 
+<shanvas.DrawTiles />
 
+The main part I want you to pay attention to here is that we only draw visible
+tiles:
+
+```js
+const visibleColumns = Math.ceil(width / TILE_SIZE)
+const visibleRows = Math.ceil(height / TILE_SIZE)
+```
+
+This way, we aren't drawing rectangles that are currently off screen. The
+calculation for what's visible will change over time as we add more
+interaction.
+
+## The First Interactions
+
+Now let's actually draw our pixel buffer, and add the ability to paint. For
+now, we'll only let the user draw one color (black). We will add the ability to
+draw using other colours after.
+
+First, let's calculate and visualise which tile the user is currently hovering
+over. Also, we will assume that the user is using a mouse for now.
+
+```svelte
+<script>
+</script>
+```
+
+<shanvas.BasicStylus />
+
+
+[attachments]: https://svelte.dev/docs/svelte/@attach
