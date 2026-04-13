@@ -8,7 +8,7 @@ published: 2025-12-11
 ---
 
 <script>
-  import exampleInvoice from "$assets/projects/cabinet-example-invoice.png"
+  import exampleInvoice from "$assets/blog/cabinet-example-invoice.png"
 </script>
 
 # Cabinet
