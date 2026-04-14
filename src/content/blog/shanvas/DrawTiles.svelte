@@ -1,8 +1,6 @@
 <script>
 	// @ts-nocheck
 
-	import { autoSizeCanvas } from '$lib/attachments.svelte'
-
 	const TILE_COLUMNS = 200
 	const TILE_ROWS = 200
 	const TILE_SIZE = 20

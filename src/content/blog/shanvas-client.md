@@ -60,6 +60,8 @@ This is important, since SvelteKit will execute code in our `<script>` block
 for server-side rendering, as well as on the browser. Using attachments, we can
 ensure access to the element object.
 
+[attachments]: https://svelte.dev/docs/svelte/@attach
+
 Let's draw some tiles on a canvas now:
 
 ```svelte
@@ -114,15 +116,56 @@ Now let's actually draw our pixel buffer, and add the ability to paint. For
 now, we'll only let the user draw one color (black). We will add the ability to
 draw using other colours after.
 
-First, let's calculate and visualise which tile the user is currently hovering
-over. Also, we will assume that the user is using a mouse for now.
+Since we are using a palette for our canvas, we will represent our pixels as a
+1D grid of colour IDs. The indices of our pixel "buffer" will start with index
+$0$ at the top-left, and index $3999$ at the bottom right (since our canvas is
+$200$ by $200$).
 
-```svelte
-<script>
-</script>
+At the start of our script block, we will initialize our buffer:
+
+```js
+const initPixel = (index) => (index % 3 == 0 ? 1 : 0)
+const pixels = $state(
+  Array.from({length: TILE_COLUMNS * TILE_ROWS}, (_, index) => initPixel(index))
+)
 ```
 
-<shanvas.BasicStylus />
+This might look a little confusing at first, but `Array.from(iterable, mapfn)`
+is used to take a data source and map each value to a new array. `iterable` can
+be any array-like structure, and `mapfn` is called for each value with the
+index as the second argument. For `iterable` we can use:
 
+```js
+{length: SOME_LENGTH}
+```
 
-[attachments]: https://svelte.dev/docs/svelte/@attach
+To trick `Array.from` into thinking we have an array of arbitrary length. Then,
+we set every 3rd "pixel" to $1$, and the rest to $0$ with `mapfn`.
+
+Before we draw our pixels, we need a way to know which colours correspond to each index. Modifying our `drawTiles` function, we get:
+
+```javascript
+function drawTiles(context) {
+  const { width, height } = context.canvas
+
+  const visibleColumns = Math.ceil(width / TILE_SIZE)
+  const visibleRows = Math.ceil(height / TILE_SIZE)
+
+  const colors = ['white', 'black'] // <--- new
+
+  for (let y = 0; y < visibleRows; y++) {
+    for (let x = 0; x < visibleColumns; x++) {
+      const pixelIndex = x + y * TILE_COLUMNS // <--- new
+      const colorIndex = pixels[pixelIndex] // <--- new
+
+      context.fillStyle = colors[colorIndex] // <--- modified
+
+      context.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+    }
+  }
+}
+```
+
+We should now see something similar to the below:
+
+<shanvas.DrawPixelBuffer initPixel={(i) => i % 3 ? 0 : 1} />
